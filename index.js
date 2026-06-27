@@ -1,4 +1,6 @@
 const { spawn } = require("child_process");
+const fs = require("fs");
+const path = require("path");
 const controlPanel = require("./controlPanel/server.js");
 
 let botProcess = null;
@@ -7,11 +9,25 @@ let logBuffer = [];
 const MAX_LOG_LINES = 500;
 const sseClients = [];
 
+// Bot account info - populated when bot logs in
+let botAccount = null;
+const BOT_ACCOUNT_FILE = path.join(__dirname, "controlPanel", "botAccount.json");
+const LEAVE_QUEUE_FILE = path.join(__dirname, "controlPanel", "leaveQueue.json");
+
+// Load previously saved account info
+try {
+  if (fs.existsSync(BOT_ACCOUNT_FILE)) {
+    botAccount = JSON.parse(fs.readFileSync(BOT_ACCOUNT_FILE, "utf8"));
+  }
+} catch {}
+
 global.panelState = {
   getBotProcess: () => botProcess,
   getBotStatus: () => botStatus,
   getLogs: () => logBuffer,
   getSseClients: () => sseClients,
+  getBotAccount: () => botAccount,
+  getLeaveQueueFile: () => LEAVE_QUEUE_FILE,
   restartBot,
   stopBot,
   startBot
@@ -27,6 +43,20 @@ function broadcastSSE(event, data) {
 function addLog(line, type = "info") {
   const entry = { time: new Date().toISOString(), msg: String(line).trim(), type };
   if (!entry.msg) return;
+
+  // Detect BOT ID log line: "BOT ID: 12345 - Name" or "BOT ID 12345 - Name"
+  const botIDMatch = entry.msg.match(/BOT\s+ID[:\s]+(\d{10,20})\s*[-–]\s*(.+)/i);
+  if (botIDMatch) {
+    botAccount = { uid: botIDMatch[1].trim(), name: botIDMatch[2].trim() };
+    try { fs.writeFileSync(BOT_ACCOUNT_FILE, JSON.stringify(botAccount)); } catch {}
+    broadcastSSE("account", botAccount);
+  }
+
+  // Detect successful login keywords
+  if (/logged in|login success|connected successfully/i.test(entry.msg) && !botIDMatch) {
+    broadcastSSE("loginStatus", { status: "connected" });
+  }
+
   logBuffer.push(entry);
   if (logBuffer.length > MAX_LOG_LINES) logBuffer.shift();
   broadcastSSE("log", entry);

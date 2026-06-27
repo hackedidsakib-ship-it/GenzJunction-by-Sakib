@@ -31,7 +31,7 @@
 }
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;}
 
-/* ── LOADER ── */
+/* LOADER */
 #loader{position:fixed;inset:0;background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s ease;}
 #loader.hide{opacity:0;pointer-events:none;}
 .loader-logo{width:180px;height:180px;object-fit:contain;animation:logoPulse 1.5s ease-in-out infinite;border-radius:16px;box-shadow:0 0 60px rgba(124,58,237,.6);}
@@ -42,7 +42,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .loader-bar-inner{height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);animation:loadBar 3s ease-in-out forwards;}
 @keyframes loadBar{0%{width:0%;}100%{width:100%;}}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #loginPage{position:fixed;inset:0;background:var(--bg-primary);display:none;align-items:center;justify-content:center;z-index:9000;background-image:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,.12) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(6,182,212,.08) 0%,transparent 50%);}
 #loginPage.show{display:flex;}
 .login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,.5);}
@@ -60,11 +60,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .btn-login:hover{background:linear-gradient(135deg,#6d28d9,#4c1d95);transform:translateY(-1px);box-shadow:0 8px 25px rgba(124,58,237,.4);}
 .login-err{color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none;}
 
-/* ── MAIN LAYOUT ── */
+/* MAIN LAYOUT */
 #app{display:none;height:100vh;overflow:hidden;}
 #app.show{display:flex;}
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar{width:var(--sidebar-width);background:var(--bg-secondary);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;flex-shrink:0;}
 .sidebar-brand{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
 .sidebar-brand img{width:40px;height:40px;object-fit:contain;border-radius:8px;box-shadow:0 0 16px rgba(124,58,237,.5);}
@@ -75,7 +75,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .sidebar-nav::-webkit-scrollbar{width:3px;}
 .sidebar-nav::-webkit-scrollbar-thumb{background:var(--border);}
 .nav-section{padding:8px 16px 4px;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-radius:8px;margin:1px 8px;transition:all .2s;color:var(--text-muted);font-size:13px;font-weight:500;border:1px solid transparent;position:relative;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-radius:8px;margin:1px 8px;transition:all .2s;color:var(--text-muted);font-size:13px;font-weight:500;border:1px solid transparent;}
 .nav-item:hover{background:var(--bg-hover);color:var(--text-primary);}
 .nav-item.active{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(6,182,212,.1));color:var(--text-primary);border-color:rgba(124,58,237,.3);}
 .nav-item.active i{color:var(--accent);}
@@ -93,43 +93,43 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .status-text span{display:block;font-size:11px;font-weight:600;color:var(--text-primary);}
 .status-text small{font-size:10px;color:var(--text-muted);}
 
-/* ── MAIN CONTENT ── */
+/* MAIN CONTENT */
 .main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .topbar{height:60px;background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;}
 .topbar-title{font-size:18px;font-weight:700;flex:1;}
 .topbar-title span{color:var(--text-muted);font-weight:400;font-size:14px;margin-left:8px;}
 .topbar-actions{display:flex;gap:10px;}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;}
 .btn-primary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;}
-.btn-primary:hover{box-shadow:0 4px 15px rgba(124,58,237,.4);transform:translateY(-1px);}
+.btn-primary:hover:not(:disabled){box-shadow:0 4px 15px rgba(124,58,237,.4);transform:translateY(-1px);}
 .btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
-.btn-success:hover{box-shadow:0 4px 15px rgba(16,185,129,.4);}
+.btn-success:hover:not(:disabled){box-shadow:0 4px 15px rgba(16,185,129,.4);}
 .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;}
-.btn-danger:hover{box-shadow:0 4px 15px rgba(239,68,68,.4);}
+.btn-danger:hover:not(:disabled){box-shadow:0 4px 15px rgba(239,68,68,.4);}
 .btn-secondary{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);}
-.btn-secondary:hover{background:var(--bg-hover);}
+.btn-secondary:hover:not(:disabled){background:var(--bg-hover);}
 .btn-warn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
-.btn-warn:hover{box-shadow:0 4px 15px rgba(245,158,11,.4);}
+.btn-warn:hover:not(:disabled){box-shadow:0 4px 15px rgba(245,158,11,.4);}
 .btn-sm{padding:6px 12px;font-size:12px;}
 .page-body{flex:1;overflow-y:auto;padding:24px;}
 .page-body::-webkit-scrollbar{width:4px;}
 .page-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
 
-/* ── PAGES ── */
+/* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* ── CARDS ── */
+/* CARDS */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
 .card-header h3{font-size:15px;font-weight:700;flex:1;}
 .card-header i{color:var(--accent);font-size:16px;}
 .card-body{padding:20px;}
 
-/* ── STAT CARDS ── */
+/* STAT CARDS */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px;}
 .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;}
-.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--sc-color1,.1) 0%,transparent 60%);opacity:.1;}
 .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
 .stat-icon.purple{background:rgba(124,58,237,.2);color:#7c3aed;}
 .stat-icon.cyan{background:rgba(6,182,212,.2);color:#06b6d4;}
@@ -138,11 +138,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .stat-icon.red{background:rgba(239,68,68,.2);color:#ef4444;}
 .stat-value{font-size:28px;font-weight:800;line-height:1;}
 .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:500;}
-.stat-change{font-size:11px;margin-top:8px;color:var(--success);}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
 
-/* ── PROGRESS BAR ── */
+/* PROGRESS BAR */
 .progress-bar{height:6px;background:#1e2340;border-radius:99px;overflow:hidden;margin-top:6px;}
 .progress-fill{height:100%;border-radius:99px;transition:width .5s ease;}
 .progress-fill.green{background:linear-gradient(90deg,#10b981,#059669);}
@@ -150,7 +149,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .progress-fill.amber{background:linear-gradient(90deg,#f59e0b,#d97706);}
 .progress-fill.red{background:linear-gradient(90deg,#ef4444,#dc2626);}
 
-/* ── FILE MANAGER ── */
+/* FILE MANAGER */
 .fm-layout{display:grid;grid-template-columns:280px 1fr;gap:0;height:calc(100vh - 109px);overflow:hidden;}
 .fm-tree{background:var(--bg-card);border:1px solid var(--border);border-radius:14px 0 0 14px;overflow-y:auto;padding:8px;}
 .fm-tree::-webkit-scrollbar{width:3px;}
@@ -174,7 +173,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .tree-toggle.open{transform:rotate(90deg);}
 .fm-actions{padding:8px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
 
-/* ── LOGS ── */
+/* LOGS */
 .log-container{background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;height:calc(100vh - 200px);overflow-y:auto;font-family:'Courier New',monospace;font-size:12px;line-height:1.6;}
 .log-container::-webkit-scrollbar{width:4px;}
 .log-container::-webkit-scrollbar-thumb{background:var(--border);}
@@ -185,17 +184,29 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);co
 .log-line.warn .log-msg{color:#fbbf24;}
 .log-line.success .log-msg{color:#4ade80;}
 
-/* ── COOKIE SECTION ── */
+/* COOKIE SECTION */
 .cookie-status-bar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600;}
 .cookie-status-bar.connected{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#10b981;}
 .cookie-status-bar.disconnected{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#ef4444;}
 .cookie-textarea{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text-primary);font-family:'Courier New',monospace;font-size:12px;min-height:140px;resize:vertical;outline:none;line-height:1.5;}
 .cookie-textarea:focus{border-color:var(--accent);}
-.connect-progress{margin-top:12px;display:none;}
-.connect-progress-bar{height:4px;background:#1e2340;border-radius:99px;overflow:hidden;}
-.connect-progress-inner{height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#06b6d4);border-radius:99px;transition:width .3s;}
 
-/* ── COMMANDS TABLE ── */
+/* CONNECT PROGRESS */
+.connect-loader{margin-top:16px;display:none;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:16px;}
+.connect-loader.show{display:block;}
+.connect-loader-bar{height:4px;background:#1e2340;border-radius:99px;overflow:hidden;margin-bottom:16px;}
+.connect-loader-bar-inner{height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#06b6d4);border-radius:99px;transition:width .5s ease;}
+.connect-steps{display:flex;flex-direction:column;gap:8px;}
+.connect-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);transition:color .3s;}
+.connect-step.active{color:var(--text-primary);}
+.connect-step.done{color:var(--success);}
+.connect-step.error{color:var(--danger);}
+.connect-step-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;background:#1e2340;}
+.connect-step.active .connect-step-icon{background:rgba(124,58,237,.3);color:var(--accent);animation:blink 1s infinite;}
+.connect-step.done .connect-step-icon{background:rgba(16,185,129,.2);color:var(--success);}
+.connect-step.error .connect-step-icon{background:rgba(239,68,68,.2);color:var(--danger);}
+
+/* COMMANDS TABLE */
 .cmd-table{width:100%;border-collapse:collapse;}
 .cmd-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
 .cmd-table td{padding:10px 14px;border-bottom:1px solid rgba(30,35,64,.5);font-size:13px;vertical-align:middle;}
@@ -211,16 +222,32 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 .badge-success{background:rgba(16,185,129,.15);color:#10b981;}
 .badge-danger{background:rgba(239,68,68,.15);color:#ef4444;}
 .badge-purple{background:rgba(124,58,237,.15);color:#7c3aed;}
+.badge-cyan{background:rgba(6,182,212,.15);color:#06b6d4;}
 
-/* ── CONFIG EDITOR ── */
+/* CONFIG EDITOR */
 .config-editor-wrap{height:calc(100vh - 220px);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
 .config-editor-wrap .CodeMirror{height:100%;font-size:13px;}
 
-/* ── BROADCAST ── */
+/* BROADCAST */
 .broadcast-textarea{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text-primary);font-family:'Segoe UI',sans-serif;font-size:14px;min-height:120px;resize:vertical;outline:none;margin-bottom:12px;}
 .broadcast-textarea:focus{border-color:var(--accent);}
 
-/* ── ALERTS & TOASTS ── */
+/* GROUPS TABLE */
+.groups-table{width:100%;border-collapse:collapse;}
+.groups-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+.groups-table td{padding:12px 14px;border-bottom:1px solid rgba(30,35,64,.5);font-size:13px;vertical-align:middle;}
+.groups-table tr:last-child td{border-bottom:none;}
+.groups-table tr:hover td{background:rgba(255,255,255,.02);}
+.group-name-cell{display:flex;align-items:center;gap:10px;}
+.group-avatar{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;font-weight:700;}
+.group-info{flex:1;min-width:0;}
+.group-info strong{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.group-info small{color:var(--text-muted);font-size:11px;}
+.groups-empty{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.groups-empty i{font-size:48px;opacity:.3;display:block;margin-bottom:12px;}
+.leave-btn-queued{opacity:.5;cursor:not-allowed;font-size:11px;}
+
+/* ALERTS & TOASTS */
 .toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;}
 .toast{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:280px;display:flex;align-items:center;gap:12px;font-size:13px;animation:slideIn .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.4);}
 .toast.success{border-left:3px solid var(--success);}
@@ -232,7 +259,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 .toast.info i{color:var(--accent2);}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.show{display:flex;}
 .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.5);}
@@ -242,7 +269,18 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 .form-control{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-size:13px;outline:none;margin-bottom:14px;}
 .form-control:focus{border-color:var(--accent);}
 
-/* ── SYSTEM MONITOR ── */
+/* CONNECTED POPUP */
+.connected-popup{text-align:center;padding:8px 0;}
+.connected-popup .popup-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(16,185,129,.3),rgba(6,182,212,.2));border:2px solid var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:var(--success);animation:popIn .4s ease;}
+@keyframes popIn{0%{transform:scale(0);opacity:0;}80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+.connected-popup h2{font-size:22px;font-weight:800;color:var(--success);margin-bottom:6px;}
+.connected-popup .acc-info{background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;text-align:left;}
+.acc-info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e2340;}
+.acc-info-row:last-child{border-bottom:none;}
+.acc-info-row span:first-child{color:var(--text-muted);font-size:12px;}
+.acc-info-row span:last-child{font-weight:600;font-size:13px;color:var(--text-primary);}
+
+/* SYSTEM MONITOR */
 .gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .gauge-label{font-size:12px;color:var(--text-muted);font-weight:600;}
 .gauge-value{font-size:24px;font-weight:800;}
@@ -251,7 +289,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 .info-row span:first-child{color:var(--text-muted);}
 .info-row span:last-child{font-weight:600;}
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media(max-width:768px){
   .sidebar{display:none;}
   .fm-layout{grid-template-columns:1fr;}
@@ -314,6 +352,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 
       <div class="nav-section">Bot</div>
       <div class="nav-item" onclick="showPage('cookie')"><i class="fa-solid fa-cookie"></i> Cookie Manager</div>
+      <div class="nav-item" onclick="showPage('groups')"><i class="fa-solid fa-users"></i> Groups <span class="nav-badge" id="groupCountBadge">0</span></div>
       <div class="nav-item" onclick="showPage('botcontrol')"><i class="fa-solid fa-robot"></i> Bot Control</div>
       <div class="nav-item" onclick="showPage('commands')"><i class="fa-solid fa-list-check"></i> Commands</div>
       <div class="nav-item" onclick="showPage('broadcast')"><i class="fa-solid fa-bullhorn"></i> Broadcast</div>
@@ -381,9 +420,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
         <div class="grid-2">
           <div class="card">
             <div class="card-header"><i class="fa-solid fa-chart-area"></i><h3>Memory Usage</h3></div>
-            <div class="card-body">
-              <canvas id="memChart" height="180"></canvas>
-            </div>
+            <div class="card-body"><canvas id="memChart" height="180"></canvas></div>
           </div>
           <div class="card">
             <div class="card-header"><i class="fa-solid fa-list"></i><h3>Recent Logs</h3></div>
@@ -411,13 +448,8 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
               <i class="fa-solid fa-file-code" style="color:var(--accent2)"></i>
               <span id="currentFilePath">No file selected</span>
             </div>
-            <div class="fm-empty" id="fmEmpty">
-              <i class="fa-solid fa-code"></i>
-              <p>Select a file to edit</p>
-            </div>
-            <div class="fm-editor-wrap" id="fmEditorWrap" style="display:none">
-              <textarea id="codeEditor"></textarea>
-            </div>
+            <div class="fm-empty" id="fmEmpty"><i class="fa-solid fa-code"></i><p>Select a file to edit</p></div>
+            <div class="fm-editor-wrap" id="fmEditorWrap" style="display:none"><textarea id="codeEditor"></textarea></div>
           </div>
         </div>
       </div>
@@ -427,44 +459,93 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
         <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;">
           <button class="btn btn-danger btn-sm" onclick="clearLogs()"><i class="fa-solid fa-trash"></i> Clear</button>
           <button class="btn btn-secondary btn-sm" onclick="toggleAutoScroll()"><i class="fa-solid fa-arrows-down-to-line" id="autoScrollIcon"></i> <span id="autoScrollText">Auto-scroll ON</span></button>
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <span class="badge badge-success" id="logCountBadge">0 lines</span>
-          </div>
+          <div style="margin-left:auto;"><span class="badge badge-success" id="logCountBadge">0 lines</span></div>
         </div>
         <div class="log-container" id="logContainer"></div>
       </div>
 
       <!-- COOKIE PAGE -->
       <div class="page" id="page-cookie">
-        <div class="card" style="max-width:700px;">
+        <div class="card" style="max-width:720px;">
           <div class="card-header"><i class="fa-solid fa-cookie-bite"></i><h3>Facebook Cookie (FBState) Manager</h3></div>
           <div class="card-body">
             <div id="cookieStatusBar" class="cookie-status-bar disconnected">
-              <i class="fa-solid fa-circle-xmark"></i>
-              <span id="cookieStatusText">Not connected</span>
+              <i class="fa-solid fa-circle-xmark" id="cookieStatusIcon"></i>
+              <div style="flex:1;">
+                <span id="cookieStatusText">Not connected</span>
+                <span id="cookieStatusUID" style="display:none;margin-left:10px;font-size:11px;color:var(--text-muted);font-family:monospace;font-weight:400;"></span>
+              </div>
             </div>
-            <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;"><i class="fa-solid fa-circle-info" style="color:var(--accent2);margin-right:6px;"></i>Paste your Facebook cookie (appstate/fbstate JSON) below. The bot will restart automatically after connecting.</p>
-            <textarea class="cookie-textarea" id="cookieInput" placeholder="Paste your Facebook cookie JSON here..."></textarea>
-            <div class="connect-progress" id="connectProgress">
-              <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;" id="connectProgressText">Connecting...</div>
-              <div class="connect-progress-bar"><div class="connect-progress-inner" id="connectProgressInner"></div></div>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;"><i class="fa-solid fa-circle-info" style="color:var(--accent2);margin-right:6px;"></i>Paste your Facebook cookie (appstate/fbstate JSON) below. The bot will restart and log in automatically.</p>
+            <textarea class="cookie-textarea" id="cookieInput" placeholder="Paste your Facebook cookie JSON array here..."></textarea>
+
+            <!-- LIVE CONNECT LOADER -->
+            <div class="connect-loader" id="connectLoader">
+              <div class="connect-loader-bar"><div class="connect-loader-bar-inner" id="connectBarInner"></div></div>
+              <div class="connect-steps" id="connectSteps">
+                <div class="connect-step" id="step-validate">
+                  <div class="connect-step-icon"><i class="fa-solid fa-check-circle"></i></div>
+                  <span>Validating cookie format...</span>
+                </div>
+                <div class="connect-step" id="step-save">
+                  <div class="connect-step-icon"><i class="fa-solid fa-floppy-disk"></i></div>
+                  <span>Saving cookie to server...</span>
+                </div>
+                <div class="connect-step" id="step-restart">
+                  <div class="connect-step-icon"><i class="fa-solid fa-rotate"></i></div>
+                  <span>Restarting bot process...</span>
+                </div>
+                <div class="connect-step" id="step-login">
+                  <div class="connect-step-icon"><i class="fa-brands fa-facebook"></i></div>
+                  <span id="step-login-text">Connecting to Facebook...</span>
+                </div>
+                <div class="connect-step" id="step-account">
+                  <div class="connect-step-icon"><i class="fa-solid fa-user-check"></i></div>
+                  <span>Fetching account info...</span>
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:10px;margin-top:12px;">
-              <button class="btn btn-success" onclick="connectCookie()"><i class="fa-solid fa-plug-circle-plus"></i> Connect</button>
-              <button class="btn btn-danger" onclick="deleteCookie()"><i class="fa-solid fa-plug-circle-minus"></i> Disconnect &amp; Delete</button>
+
+            <div style="display:flex;gap:10px;margin-top:14px;">
+              <button class="btn btn-success" id="connectBtn" onclick="connectCookie()"><i class="fa-solid fa-plug-circle-plus"></i> Connect</button>
+              <button class="btn btn-danger" id="disconnectBtn" onclick="deleteCookie()"><i class="fa-solid fa-plug-circle-minus"></i> Disconnect</button>
             </div>
           </div>
         </div>
-        <div class="card" style="max-width:700px;margin-top:16px;">
+        <div class="card" style="max-width:720px;margin-top:16px;">
           <div class="card-header"><i class="fa-solid fa-circle-question"></i><h3>How to get Facebook Cookie?</h3></div>
           <div class="card-body">
             <ol style="color:var(--text-muted);font-size:13px;line-height:2;padding-left:16px;">
               <li>Install browser extension: <strong style="color:var(--text-primary)">Cookie Editor</strong> or <strong style="color:var(--text-primary)">EditThisCookie</strong></li>
               <li>Go to <strong style="color:var(--text-primary)">facebook.com</strong> and log in with your bot account</li>
-              <li>Open the extension and export cookies as JSON</li>
-              <li>Paste the JSON here and click Connect</li>
+              <li>Open the extension, click <strong style="color:var(--text-primary)">Export</strong> &rarr; copy as JSON</li>
+              <li>Paste the JSON here and click <strong style="color:var(--text-primary)">Connect</strong></li>
             </ol>
           </div>
+        </div>
+      </div>
+
+      <!-- GROUPS PAGE -->
+      <div class="page" id="page-groups">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-users"></i>
+            <h3>Joined Groups</h3>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+              <input type="text" id="groupSearch" class="form-control" style="margin:0;width:200px;" placeholder="Search groups..." oninput="filterGroups()"/>
+              <span class="badge badge-cyan" id="groupsCountBadge">0 groups</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadGroups()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;overflow-x:auto;">
+            <div id="groupsTableWrap">
+              <div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading groups...</p></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:12px 16px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);border-radius:10px;font-size:12px;color:var(--text-muted);">
+          <i class="fa-solid fa-triangle-exclamation" style="color:var(--warn);margin-right:6px;"></i>
+          Leave requests are queued. The bot will leave the group on the next message event in that group.
         </div>
       </div>
 
@@ -505,14 +586,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
           </div>
           <div class="card-body" style="padding:0;overflow-x:auto;">
             <table class="cmd-table">
-              <thead>
-                <tr>
-                  <th>Command Name</th>
-                  <th>File</th>
-                  <th>Status</th>
-                  <th style="text-align:center;">Toggle</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Command Name</th><th>File</th><th>Status</th><th style="text-align:center;">Toggle</th></tr></thead>
               <tbody id="cmdTableBody"></tbody>
             </table>
           </div>
@@ -546,9 +620,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
             </div>
           </div>
           <div class="card-body" style="padding:0;">
-            <div class="config-editor-wrap">
-              <textarea id="configEditor"></textarea>
-            </div>
+            <div class="config-editor-wrap"><textarea id="configEditor"></textarea></div>
           </div>
         </div>
       </div>
@@ -611,7 +683,7 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 <div class="modal-overlay" id="newFolderModal">
   <div class="modal">
     <h3><i class="fa-solid fa-folder-plus" style="color:var(--accent3)"></i> New Folder</h3>
-    <p>Enter the path for the new folder (e.g. scripts/myFolder)</p>
+    <p>Enter the path for the new folder</p>
     <input type="text" class="form-control" id="newFolderPath" placeholder="path/to/folder"/>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('newFolderModal')">Cancel</button>
@@ -631,11 +703,42 @@ input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
   </div>
 </div>
 
+<!-- CONNECTED SUCCESS POPUP -->
+<div class="modal-overlay" id="connectedModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="connected-popup">
+      <div class="popup-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <h2>Connected!</h2>
+      <p style="color:var(--text-muted);margin-bottom:0;">Bot successfully logged in to Facebook</p>
+      <div class="acc-info" id="connectedAccInfo">
+        <div class="acc-info-row"><span>User ID (UID)</span><span id="acc-uid">--</span></div>
+        <div class="acc-info-row"><span>Account Name</span><span id="acc-name">Fetching...</span></div>
+        <div class="acc-info-row"><span>Status</span><span style="color:var(--success)"><i class="fa-solid fa-circle" style="font-size:8px;margin-right:4px;"></i>Online</span></div>
+      </div>
+    </div>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn btn-success" onclick="closeModal('connectedModal')"><i class="fa-solid fa-check"></i> Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEAVE CONFIRM MODAL -->
+<div class="modal-overlay" id="leaveModal">
+  <div class="modal">
+    <h3><i class="fa-solid fa-right-from-bracket" style="color:var(--danger)"></i> Leave Group</h3>
+    <p id="leaveModalMsg">Are you sure you want to leave this group?</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('leaveModal')">Cancel</button>
+      <button class="btn btn-danger" id="leaveConfirmBtn"><i class="fa-solid fa-right-from-bracket"></i> Leave Group</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────────
+// ── STATE
 const state = {
   currentPage: 'overview',
   currentFile: null,
@@ -645,11 +748,15 @@ const state = {
   configCmEditor: null,
   memHistory: [],
   statsInterval: null,
-  treeData: []
+  treeData: [],
+  allCommands: [],
+  allGroups: [],
+  connectingInProgress: false,
+  connectedUID: null
 };
 let sseSource = null;
 
-// ── LOADER ────────────────────────────────────────────────────────────────
+// ── LOADER
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('loader').classList.add('hide');
@@ -670,7 +777,7 @@ function showApp() {
   initApp();
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────────────
+// ── LOGIN
 document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 async function doLogin() {
   const pass = document.getElementById('loginPass').value;
@@ -685,34 +792,38 @@ async function doLogout() {
   location.reload();
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────
+// ── NAVIGATION
 const pageTitles = {
-  overview:   ['Overview',     'Dashboard'],
-  files:      ['File Manager', 'Browse & Edit Files'],
-  logs:       ['Live Logs',    'Real-time Bot Output'],
+  overview:   ['Overview',      'Dashboard'],
+  files:      ['File Manager',  'Browse & Edit Files'],
+  logs:       ['Live Logs',     'Real-time Bot Output'],
   cookie:     ['Cookie Manager','Facebook FBState'],
-  botcontrol: ['Bot Control',  'Start / Stop / Restart'],
-  commands:   ['Commands',     'Enable & Disable'],
-  broadcast:  ['Broadcast',    'Send to All Groups'],
-  config:     ['Config Editor','config.json'],
+  groups:     ['Groups',        'Joined Groups & Leave'],
+  botcontrol: ['Bot Control',   'Start / Stop / Restart'],
+  commands:   ['Commands',      'Enable & Disable'],
+  broadcast:  ['Broadcast',     'Send to All Groups'],
+  config:     ['Config Editor', 'config.json'],
   system:     ['System Monitor','Server Resources']
 };
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
-  document.querySelector(`.nav-item[onclick*="${page}"]`).classList.add('active');
+  const navEl = document.querySelector(`.nav-item[onclick*="'${page}'"]`);
+  if (navEl) navEl.classList.add('active');
   state.currentPage = page;
   const [title, sub] = pageTitles[page] || [page,''];
   document.getElementById('topbarTitle').innerHTML = `${title} <span>${sub}</span>`;
   if (page==='files' && state.treeData.length===0) loadFileTree();
   if (page==='commands') loadCommands();
   if (page==='config') loadConfig();
-  if (page==='logs') setupLogs();
+  if (page==='logs') {}
   if (page==='system') loadSystemStats();
+  if (page==='cookie') loadCookieStatus();
+  if (page==='groups') loadGroups();
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────
+// ── INIT
 function initApp() {
   initCodeEditor();
   initConfigEditor();
@@ -721,7 +832,7 @@ function initApp() {
   state.statsInterval = setInterval(fetchStats, 5000);
 }
 
-// ── SSE ───────────────────────────────────────────────────────────────────
+// ── SSE
 function setupSSE() {
   if (sseSource) { sseSource.close(); sseSource = null; }
   sseSource = new EventSource('/api/sse/logs');
@@ -732,16 +843,30 @@ function setupSSE() {
     try { appendLog(JSON.parse(e.data)); } catch {}
   });
   sseSource.addEventListener('status', e => {
-    try { updateBotStatus(JSON.parse(e.data)); } catch {}
+    try {
+      const status = JSON.parse(e.data);
+      updateBotStatus(status);
+      // If bot just started and we are in connecting mode, advance steps
+      if (state.connectingInProgress && status === 'running') {
+        setConnectStep('step-restart', 'done');
+        setConnectStep('step-login', 'active');
+        updateConnectBar(60);
+      }
+    } catch {}
   });
-  sseSource.onerror = () => {
-    setTimeout(setupSSE, 5000);
-  };
+  sseSource.addEventListener('account', e => {
+    try {
+      const acct = JSON.parse(e.data);
+      if (state.connectingInProgress) {
+        finishConnecting(acct);
+      }
+    } catch {}
+  });
+  sseSource.onerror = () => { setTimeout(setupSSE, 5000); };
 }
-function setupLogs() {}
 
-// ── STATS ─────────────────────────────────────────────────────────────────
-let memChart, sysChart;
+// ── STATS
+let memChart;
 async function fetchStats() {
   const r = await fetch('/api/stats').then(r=>r.json()).catch(()=>null);
   if (!r) return;
@@ -757,8 +882,6 @@ async function fetchStats() {
   document.getElementById('bc-platform').textContent = r.platform;
   document.getElementById('bc-uptime').textContent = formatUptime(r.uptime);
   document.getElementById('sidebarUptime').textContent = formatUptime(r.uptime);
-
-  // System monitor
   if (state.currentPage === 'system') {
     document.getElementById('sys-memPct').textContent = r.memory.percent + '%';
     document.getElementById('sys-memBar').style.width = r.memory.percent + '%';
@@ -776,13 +899,10 @@ async function fetchStats() {
       <div class="info-row"><span>Platform</span><span>${r.platform}</span></div>
     `;
   }
-
-  // Memory history for chart
   state.memHistory.push(r.memory.percent);
   if (state.memHistory.length > 20) state.memHistory.shift();
   updateMemChart();
 }
-
 function updateMemChart() {
   const labels = state.memHistory.map((_,i)=>i+1+'');
   if (!memChart) {
@@ -798,9 +918,7 @@ function updateMemChart() {
     memChart.update('none');
   }
 }
-
 function loadSystemStats() { fetchStats(); }
-
 function updateBotStatus(status) {
   const dot = document.getElementById('sidebarDot');
   const text = document.getElementById('sidebarStatus');
@@ -810,7 +928,7 @@ function updateBotStatus(status) {
   if (bcStatus) bcStatus.textContent = status || 'stopped';
 }
 
-// ── LOGS ──────────────────────────────────────────────────────────────────
+// ── LOGS
 function appendLog(entry) {
   const container = document.getElementById('logContainer');
   const recent = document.getElementById('recentLogs');
@@ -824,10 +942,25 @@ function appendLog(entry) {
   if (container.children.length > 1000) container.removeChild(container.firstChild);
   if (state.autoScroll) container.scrollTop = container.scrollHeight;
 
-  // Recent logs widget
+  // Check for login success in logs if connecting
+  if (state.connectingInProgress) {
+    const msg = entry.msg.toLowerCase();
+    if (/bot id|logged in|login success/i.test(entry.msg)) {
+      setConnectStep('step-login', 'done');
+      setConnectStep('step-account', 'active');
+      updateConnectBar(85);
+      document.getElementById('step-login-text').textContent = 'Facebook login successful!';
+      // Try polling account info
+      pollAccountInfo();
+    }
+    if (/error|failed|not logged in/i.test(msg) && !/restarting/i.test(msg)) {
+      setConnectStep('step-login', 'error');
+      document.getElementById('step-login-text').textContent = 'Login failed: ' + entry.msg.substring(0,50);
+    }
+  }
+
   if (recent) {
-    const rd = div.cloneNode(true);
-    recent.appendChild(rd);
+    recent.appendChild(div.cloneNode(true));
     if (recent.children.length > 50) recent.removeChild(recent.firstChild);
     recent.scrollTop = recent.scrollHeight;
   }
@@ -843,281 +976,434 @@ function toggleAutoScroll() {
   document.getElementById('autoScrollText').textContent = state.autoScroll ? 'Auto-scroll ON' : 'Auto-scroll OFF';
 }
 
-// ── BOT CONTROL ───────────────────────────────────────────────────────────
+// ── BOT CONTROL
 async function botAction(action) {
   const r = await fetch(`/api/bot/${action}`,{method:'POST'}).then(r=>r.json());
   toast(r.message || 'Done', r.success ? 'success' : 'error');
   setTimeout(fetchStats, 2000);
 }
 
-// ── COOKIE ────────────────────────────────────────────────────────────────
+// ── COOKIE MANAGER
 async function loadCookieStatus() {
-  const r = await fetch('/api/cookie').then(r=>r.json());
+  const r = await fetch('/api/cookie').then(r=>r.json()).catch(()=>null);
+  if (!r) return;
   const bar = document.getElementById('cookieStatusBar');
+  const icon = document.getElementById('cookieStatusIcon');
   const txt = document.getElementById('cookieStatusText');
+  const uidEl = document.getElementById('cookieStatusUID');
   if (r.connected) {
     bar.className = 'cookie-status-bar connected';
-    bar.querySelector('i').className = 'fa-solid fa-circle-check';
-    txt.textContent = 'Cookie connected - Bot is using this cookie';
+    icon.className = 'fa-solid fa-circle-check';
+    txt.textContent = 'Cookie connected';
+    if (r.uid) { uidEl.textContent = 'UID: ' + r.uid; uidEl.style.display = 'inline'; }
     document.getElementById('cookieInput').value = r.cookie;
   } else {
     bar.className = 'cookie-status-bar disconnected';
-    bar.querySelector('i').className = 'fa-solid fa-circle-xmark';
+    icon.className = 'fa-solid fa-circle-xmark';
     txt.textContent = 'Not connected - No cookie configured';
+    uidEl.style.display = 'none';
   }
 }
-document.querySelector('.nav-item[onclick*="cookie"]').addEventListener('click', loadCookieStatus);
+
+// Step helpers
+function setConnectStep(stepId, status) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  el.className = 'connect-step ' + status;
+}
+function updateConnectBar(pct) {
+  document.getElementById('connectBarInner').style.width = pct + '%';
+}
 
 async function connectCookie() {
   const cookie = document.getElementById('cookieInput').value.trim();
-  if (!cookie) { toast('Please enter a cookie first.','error'); return; }
-  const prog = document.getElementById('connectProgress');
-  const inner = document.getElementById('connectProgressInner');
-  const txt = document.getElementById('connectProgressText');
-  prog.style.display = 'block';
-  inner.style.width = '0%';
-  txt.textContent = 'Saving cookie...';
-  let w = 0;
-  const iv = setInterval(()=>{ w = Math.min(w+5, 90); inner.style.width = w+'%'; }, 150);
-  const r = await fetch('/api/cookie/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cookie})}).then(r=>r.json());
-  clearInterval(iv);
-  if (r.success) {
-    inner.style.width = '100%';
-    txt.textContent = 'Connect successful!';
-    setTimeout(()=>{ prog.style.display='none'; inner.style.width='0%'; }, 3000);
-    toast('Cookie connected! Bot restarting...','success');
-    loadCookieStatus();
-  } else {
-    prog.style.display = 'none';
-    toast(r.message || 'Failed to connect.','error');
+  if (!cookie) { toast('Please paste a cookie JSON first.', 'error'); return; }
+
+  // Reset steps
+  ['step-validate','step-save','step-restart','step-login','step-account'].forEach(s => setConnectStep(s, ''));
+  document.getElementById('step-login-text').textContent = 'Connecting to Facebook...';
+  updateConnectBar(0);
+  document.getElementById('connectLoader').classList.add('show');
+  document.getElementById('connectBtn').disabled = true;
+  state.connectingInProgress = true;
+  state.connectedUID = null;
+
+  // Step 1: Validate
+  setConnectStep('step-validate', 'active');
+  updateConnectBar(10);
+  await sleep(400);
+  try {
+    const parsed = JSON.parse(cookie);
+    if (!Array.isArray(parsed)) throw new Error('Cookie must be a JSON array');
+    setConnectStep('step-validate', 'done');
+  } catch (e) {
+    setConnectStep('step-validate', 'error');
+    toast('Invalid cookie format: ' + e.message, 'error');
+    resetConnectUI();
+    return;
   }
+
+  // Step 2: Save
+  setConnectStep('step-save', 'active');
+  updateConnectBar(25);
+  const r = await fetch('/api/cookie/connect', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ cookie })
+  }).then(r=>r.json()).catch(()=>null);
+
+  if (!r || !r.success) {
+    setConnectStep('step-save', 'error');
+    toast(r?.message || 'Failed to save cookie', 'error');
+    resetConnectUI();
+    return;
+  }
+  setConnectStep('step-save', 'done');
+  if (r.uid) { state.connectedUID = r.uid; }
+
+  // Step 3: Restart (bot restarts automatically after save)
+  setConnectStep('step-restart', 'active');
+  updateConnectBar(45);
+
+  // Step 4: Login - monitored via SSE (in appendLog and status handler)
+  // Set a timeout: if no login after 60 seconds, show partial success
+  setTimeout(() => {
+    if (state.connectingInProgress) {
+      // Show partial success with just UID
+      finishConnecting({ uid: state.connectedUID, name: null });
+    }
+  }, 60000);
+}
+
+async function pollAccountInfo(retries = 10) {
+  for (let i = 0; i < retries; i++) {
+    await sleep(2000);
+    const r = await fetch('/api/cookie/account').then(r=>r.json()).catch(()=>null);
+    if (r && r.success) {
+      finishConnecting(r);
+      return;
+    }
+  }
+  // Fallback with just UID
+  finishConnecting({ uid: state.connectedUID, name: null });
+}
+
+function finishConnecting(acct) {
+  if (!state.connectingInProgress) return;
+  state.connectingInProgress = false;
+
+  setConnectStep('step-login', 'done');
+  setConnectStep('step-account', 'done');
+  updateConnectBar(100);
+
+  // Update status bar
+  const bar = document.getElementById('cookieStatusBar');
+  const icon = document.getElementById('cookieStatusIcon');
+  const txt = document.getElementById('cookieStatusText');
+  const uidEl = document.getElementById('cookieStatusUID');
+  bar.className = 'cookie-status-bar connected';
+  icon.className = 'fa-solid fa-circle-check';
+  txt.textContent = 'Cookie connected';
+  if (acct?.uid) { uidEl.textContent = 'UID: ' + acct.uid; uidEl.style.display = 'inline'; }
+
+  // Show success popup
+  document.getElementById('acc-uid').textContent = acct?.uid || state.connectedUID || 'Unknown';
+  document.getElementById('acc-name').textContent = acct?.name || 'Fetching from bot logs...';
+  document.getElementById('connectedModal').classList.add('show');
+
+  setTimeout(resetConnectUI, 1000);
+  toast('Bot connected to Facebook successfully!', 'success');
+}
+
+function resetConnectUI() {
+  state.connectingInProgress = false;
+  document.getElementById('connectBtn').disabled = false;
+  document.getElementById('connectLoader').classList.remove('show');
 }
 
 async function deleteCookie() {
   const r = await fetch('/api/cookie/delete',{method:'POST'}).then(r=>r.json());
-  toast(r.message || 'Done', r.success?'success':'error');
-  document.getElementById('cookieInput').value = '';
+  toast(r.message || 'Done', r.success ? 'info' : 'error');
   loadCookieStatus();
 }
 
-// ── FILE MANAGER ──────────────────────────────────────────────────────────
-function initCodeEditor() {
-  const el = document.getElementById('codeEditor');
-  state.cmEditor = CodeMirror.fromTextArea(el, {
-    mode: 'javascript', theme: 'dracula', lineNumbers: true,
-    autoCloseBrackets: true, tabSize: 2, indentWithTabs: false,
-    lineWrapping: false, extraKeys: {"Ctrl-S": saveFile, "Cmd-S": saveFile}
-  });
+// ── GROUPS
+let groupsData = [];
+async function loadGroups() {
+  document.getElementById('groupsTableWrap').innerHTML = '<div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading groups...</p></div>';
+  const r = await fetch('/api/groups').then(r=>r.json()).catch(()=>({groups:[],count:0}));
+  groupsData = r.groups || [];
+  state.allGroups = groupsData;
+  renderGroupsTable(groupsData);
+  const count = groupsData.length;
+  document.getElementById('groupsCountBadge').textContent = count + ' groups';
+  document.getElementById('groupCountBadge').textContent = count;
 }
 
-async function loadFileTree() {
-  document.getElementById('fileTree').innerHTML = '<div style="padding:8px;color:var(--text-muted);font-size:12px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
-  const r = await fetch('/api/files/tree').then(r=>r.json());
-  state.treeData = r.tree;
-  renderTree(r.tree, document.getElementById('fileTree'));
+function filterGroups() {
+  const q = document.getElementById('groupSearch').value.toLowerCase();
+  const filtered = state.allGroups.filter(g =>
+    g.name.toLowerCase().includes(q) || g.threadID.includes(q)
+  );
+  renderGroupsTable(filtered);
 }
 
-function renderTree(items, container) {
-  container.innerHTML = '';
-  for (const item of items) {
-    if (item.type === 'dir') {
-      const wrapper = document.createElement('div');
-      const row = document.createElement('div');
-      row.className = 'tree-item';
-      row.innerHTML = `<i class="fa-solid fa-chevron-right tree-toggle" id="tog-${btoa(item.path).replace(/=/g,'')}"></i><i class="fa-solid fa-folder"></i><span>${item.name}</span>`;
-      const children = document.createElement('div');
-      children.className = 'tree-children';
-      children.style.display = 'none';
-      if (item.children && item.children.length > 0) renderTree(item.children, children);
-      row.onclick = (e) => {
-        e.stopPropagation();
-        const tog = row.querySelector('.tree-toggle');
-        const isOpen = children.style.display !== 'none';
-        children.style.display = isOpen ? 'none' : 'block';
-        tog.classList.toggle('open', !isOpen);
-        row.querySelector('.fa-folder').className = isOpen ? 'fa-solid fa-folder' : 'fa-solid fa-folder-open';
-      };
-      wrapper.appendChild(row);
-      wrapper.appendChild(children);
-      container.appendChild(wrapper);
-    } else {
-      const row = document.createElement('div');
-      row.className = 'tree-item';
-      const ext = item.name.split('.').pop();
-      const icon = ['js','ts','json','html','css'].includes(ext) ? 'fa-file-code' : 'fa-file-alt';
-      row.innerHTML = `<i style="width:12px"></i><i class="fa-solid ${icon}"></i><span>${item.name}</span>`;
-      row.onclick = () => openFile(item.path, row);
-      container.appendChild(row);
-    }
+function renderGroupsTable(groups) {
+  const wrap = document.getElementById('groupsTableWrap');
+  if (!groups.length) {
+    wrap.innerHTML = `<div class="groups-empty">
+      <i class="fa-solid fa-users-slash"></i>
+      <p>No groups found. The bot needs to be running and have received messages to populate the group list.</p>
+    </div>`;
+    return;
+  }
+
+  // Read queued leaves
+  let queuedLeaves = [];
+  try { queuedLeaves = JSON.parse(localStorage.getItem('leaveQueue') || '[]'); } catch {}
+
+  const rows = groups.map(g => {
+    const initials = g.name.slice(0,2).toUpperCase();
+    const queued = queuedLeaves.includes(g.threadID);
+    return `<tr id="group-row-${g.threadID}">
+      <td>
+        <div class="group-name-cell">
+          <div class="group-avatar">${initials}</div>
+          <div class="group-info">
+            <strong>${escHtml(g.name)}</strong>
+            <small><i class="fa-solid fa-hashtag" style="font-size:9px;margin-right:3px;"></i>${g.threadID}</small>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge badge-cyan"><i class="fa-solid fa-users" style="margin-right:4px;font-size:10px;"></i>${g.memberCount || '?'} members</span></td>
+      <td>${g.emoji || '-'}</td>
+      <td>
+        ${queued
+          ? `<span class="badge badge-danger leave-btn-queued"><i class="fa-solid fa-clock" style="margin-right:4px;"></i>Leave Queued</span>`
+          : `<button class="btn btn-danger btn-sm" onclick="confirmLeave('${g.threadID}','${escHtml(g.name).replace(/'/g,"\\'")}')"><i class="fa-solid fa-right-from-bracket"></i> Leave</button>`
+        }
+      </td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `<table class="groups-table">
+    <thead><tr>
+      <th>Group Name</th>
+      <th>Members</th>
+      <th>Emoji</th>
+      <th>Action</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function confirmLeave(threadID, name) {
+  document.getElementById('leaveModalMsg').textContent = `Are you sure you want to leave "${name}"? This will be queued and executed on the next message event.`;
+  document.getElementById('leaveConfirmBtn').onclick = () => leaveGroup(threadID, name);
+  document.getElementById('leaveModal').classList.add('show');
+}
+
+async function leaveGroup(threadID, name) {
+  closeModal('leaveModal');
+  const r = await fetch('/api/groups/leave', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ threadID, name })
+  }).then(r=>r.json()).catch(()=>null);
+
+  if (r && r.success) {
+    // Track locally so UI updates immediately
+    let q = [];
+    try { q = JSON.parse(localStorage.getItem('leaveQueue') || '[]'); } catch {}
+    if (!q.includes(threadID)) { q.push(threadID); localStorage.setItem('leaveQueue', JSON.stringify(q)); }
+    toast('Leave request queued for: ' + name, 'info');
+    // Re-render to show queued state
+    renderGroupsTable(state.allGroups);
+  } else {
+    toast(r?.message || 'Failed to queue leave request', 'error');
   }
 }
 
-async function openFile(filePath, rowEl) {
-  document.querySelectorAll('.tree-item').forEach(i=>i.classList.remove('selected'));
-  if (rowEl) rowEl.classList.add('selected');
-  const r = await fetch(`/api/files/read?filePath=${encodeURIComponent(filePath)}`).then(r=>r.json());
-  if (r.error) { toast(r.error,'error'); return; }
-  state.currentFile = filePath;
-  document.getElementById('currentFilePath').textContent = filePath;
-  document.getElementById('fmEmpty').style.display = 'none';
-  document.getElementById('fmEditorWrap').style.display = 'block';
-  document.getElementById('deleteFileBtn').style.display = 'flex';
-  const ext = filePath.split('.').pop();
-  const mode = ext === 'json' ? {name:'javascript',json:true} : ext === 'html' ? 'htmlmixed' : 'javascript';
-  state.cmEditor.setOption('mode', mode);
-  state.cmEditor.setValue(r.content || '');
-  setTimeout(()=>state.cmEditor.refresh(), 50);
-}
-
-async function saveFile() {
-  if (!state.currentFile) { toast('No file selected.','error'); return; }
-  const content = state.cmEditor.getValue();
-  const r = await fetch('/api/files/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile,content})}).then(r=>r.json());
-  if (r.success) toast('File saved: '+state.currentFile,'success');
-  else toast(r.error||'Save failed','error');
-}
-
-function newFileModal() { document.getElementById('newFileModal').classList.add('show'); }
-function newFolderModal() { document.getElementById('newFolderModal').classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-
-async function createFile() {
-  const p = document.getElementById('newFilePath').value.trim();
-  if (!p) return;
-  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:p,isDir:false})}).then(r=>r.json());
-  closeModal('newFileModal');
-  if (r.success) { toast('File created: '+p,'success'); await loadFileTree(); }
-  else toast(r.error||'Failed','error');
-}
-
-async function createFolder() {
-  const p = document.getElementById('newFolderPath').value.trim();
-  if (!p) return;
-  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:p,isDir:true})}).then(r=>r.json());
-  closeModal('newFolderModal');
-  if (r.success) { toast('Folder created: '+p,'success'); await loadFileTree(); }
-  else toast(r.error||'Failed','error');
-}
-
-function deleteCurrentFile() {
-  if (!state.currentFile) return;
-  document.getElementById('confirmTitle').textContent = 'Delete File';
-  document.getElementById('confirmMsg').textContent = `Are you sure you want to delete "${state.currentFile}"? This cannot be undone.`;
-  document.getElementById('confirmModal').classList.add('show');
-  document.getElementById('confirmOkBtn').onclick = async () => {
-    const r = await fetch('/api/files/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile})}).then(r=>r.json());
-    closeModal('confirmModal');
-    if (r.success) {
-      toast('Deleted: '+state.currentFile,'success');
-      state.currentFile = null;
-      document.getElementById('fmEmpty').style.display = 'flex';
-      document.getElementById('fmEditorWrap').style.display = 'none';
-      document.getElementById('deleteFileBtn').style.display = 'none';
-      document.getElementById('currentFilePath').textContent = 'No file selected';
-      loadFileTree();
-    } else toast(r.error||'Failed','error');
-  };
-}
-
-// ── COMMANDS ──────────────────────────────────────────────────────────────
+// ── COMMANDS
 let allCmds = [];
 async function loadCommands() {
-  const r = await fetch('/api/commands').then(r=>r.json());
-  if (r.error) { toast(r.error,'error'); return; }
-  allCmds = r.commands;
+  const r = await fetch('/api/commands').then(r=>r.json()).catch(()=>({commands:[]}));
+  allCmds = r.commands || [];
+  state.allCommands = allCmds;
   document.getElementById('cmdCountBadge').textContent = allCmds.length + ' commands';
-  renderCommands(allCmds);
+  renderCmdTable(allCmds);
 }
-
-function renderCommands(cmds) {
-  const tbody = document.getElementById('cmdTableBody');
-  tbody.innerHTML = '';
-  cmds.forEach(cmd => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>${escHtml(cmd.name)}</strong></td>
-      <td style="color:var(--text-muted)">${escHtml(cmd.file)}</td>
-      <td><span class="badge ${cmd.enabled?'badge-success':'badge-danger'}">${cmd.enabled?'Enabled':'Disabled'}</span></td>
-      <td style="text-align:center">
-        <label class="toggle-switch">
-          <input type="checkbox" ${cmd.enabled?'checked':''} onchange="toggleCommand('${escHtml(cmd.name)}',this.checked)"/>
-          <span class="toggle-slider"></span>
-        </label>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
 function filterCmds() {
   const q = document.getElementById('cmdSearch').value.toLowerCase();
-  renderCommands(allCmds.filter(c=>c.name.toLowerCase().includes(q)||c.file.toLowerCase().includes(q)));
+  renderCmdTable(state.allCommands.filter(c => c.name.toLowerCase().includes(q)));
 }
-
-async function toggleCommand(name, enabled) {
+function renderCmdTable(cmds) {
+  const tbody = document.getElementById('cmdTableBody');
+  tbody.innerHTML = cmds.map(c => `<tr>
+    <td><strong>${escHtml(c.name)}</strong></td>
+    <td style="color:var(--text-muted);font-family:monospace;font-size:12px;">${escHtml(c.file)}</td>
+    <td><span class="badge ${c.enabled ? 'badge-success':'badge-danger'}">${c.enabled?'Enabled':'Disabled'}</span></td>
+    <td style="text-align:center;">
+      <label class="toggle-switch">
+        <input type="checkbox" ${c.enabled?'checked':''} onchange="toggleCmd('${escHtml(c.name)}',this.checked)"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </td>
+  </tr>`).join('');
+}
+async function toggleCmd(name, enabled) {
   const r = await fetch('/api/commands/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enabled})}).then(r=>r.json());
-  if (r.success) { toast(`Command "${name}" ${enabled?'enabled':'disabled'}`, enabled?'success':'info'); loadCommands(); }
-  else toast(r.error||'Failed','error');
+  if (!r.success) toast('Toggle failed: '+r.error,'error');
+  else loadCommands();
 }
 
-// ── CONFIG EDITOR ─────────────────────────────────────────────────────────
+// ── CONFIG
+async function loadConfig() {
+  const r = await fetch('/api/config').then(r=>r.json()).catch(()=>null);
+  if (!r) return;
+  if (state.configCmEditor) {
+    state.configCmEditor.setValue(r.content || '');
+  }
+}
+async function saveConfig() {
+  if (!state.configCmEditor) return;
+  const content = state.configCmEditor.getValue();
+  const r = await fetch('/api/config/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})}).then(r=>r.json());
+  toast(r.message || r.error, r.success?'success':'error');
+}
+
+// ── FILE MANAGER
+async function loadFileTree() {
+  const r = await fetch('/api/files/tree').then(r=>r.json()).catch(()=>({tree:[]}));
+  state.treeData = r.tree;
+  document.getElementById('fileTree').innerHTML = '';
+  renderTree(r.tree, document.getElementById('fileTree'));
+}
+function renderTree(items, container) {
+  for (const item of items) {
+    const div = document.createElement('div');
+    if (item.type === 'dir') {
+      div.className = 'tree-item';
+      div.innerHTML = `<span class="tree-toggle"><i class="fa-solid fa-chevron-right"></i></span><i class="fa-solid fa-folder"></i><span>${escHtml(item.name)}</span>`;
+      const children = document.createElement('div');
+      children.className = 'tree-children';
+      children.style.display = 'none';
+      renderTree(item.children || [], children);
+      div.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = children.style.display !== 'none';
+        children.style.display = open ? 'none' : 'block';
+        const toggle = div.querySelector('.tree-toggle i');
+        div.querySelector('i.fa-folder, i.fa-folder-open').className = open ? 'fa-solid fa-folder' : 'fa-solid fa-folder-open';
+        toggle.className = open ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down';
+      });
+      container.appendChild(div);
+      container.appendChild(children);
+    } else {
+      div.className = 'tree-item';
+      const ext = item.name.split('.').pop();
+      const icon = ['js','ts','jsx','tsx'].includes(ext) ? 'fa-file-code' : ['json','yaml','yml'].includes(ext) ? 'fa-file-code' : 'fa-file-alt';
+      div.innerHTML = `<span style="width:12px;"></span><i class="fa-solid ${icon}"></i><span>${escHtml(item.name)}</span>`;
+      div.addEventListener('click', () => openFile(item.path, div));
+      container.appendChild(div);
+    }
+  }
+}
+async function openFile(filePath, el) {
+  document.querySelectorAll('.tree-item').forEach(i=>i.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  state.currentFile = filePath;
+  document.getElementById('currentFilePath').textContent = filePath;
+  document.getElementById('deleteFileBtn').style.display = 'inline-flex';
+  const r = await fetch(`/api/files/read?filePath=${encodeURIComponent(filePath)}`).then(r=>r.json());
+  document.getElementById('fmEmpty').style.display = 'none';
+  document.getElementById('fmEditorWrap').style.display = 'block';
+  if (state.cmEditor) state.cmEditor.setValue(r.content || '');
+}
+async function saveFile() {
+  if (!state.currentFile || !state.cmEditor) return;
+  const r = await fetch('/api/files/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile,content:state.cmEditor.getValue()})}).then(r=>r.json());
+  toast(r.success?'File saved':'Error: '+r.error, r.success?'success':'error');
+}
+async function deleteCurrentFile() {
+  if (!state.currentFile) return;
+  if (!confirm(`Delete "${state.currentFile}"?`)) return;
+  const r = await fetch('/api/files/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile})}).then(r=>r.json());
+  if (r.success) { state.currentFile=null; loadFileTree(); document.getElementById('fmEmpty').style.display='flex'; document.getElementById('fmEditorWrap').style.display='none'; }
+  toast(r.success?'Deleted':'Error: '+r.error, r.success?'success':'error');
+}
+function newFileModal() { document.getElementById('newFilePath').value=''; document.getElementById('newFileModal').classList.add('show'); }
+function newFolderModal() { document.getElementById('newFolderPath').value=''; document.getElementById('newFolderModal').classList.add('show'); }
+async function createFile() {
+  const fp = document.getElementById('newFilePath').value.trim();
+  if (!fp) return;
+  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:fp,isDir:false})}).then(r=>r.json());
+  closeModal('newFileModal');
+  toast(r.success?'File created':'Error: '+r.error,r.success?'success':'error');
+  if (r.success) loadFileTree();
+}
+async function createFolder() {
+  const fp = document.getElementById('newFolderPath').value.trim();
+  if (!fp) return;
+  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:fp,isDir:true})}).then(r=>r.json());
+  closeModal('newFolderModal');
+  toast(r.success?'Folder created':'Error: '+r.error,r.success?'success':'error');
+  if (r.success) loadFileTree();
+}
+
+// ── BROADCAST
+async function sendBroadcast() {
+  const msg = document.getElementById('broadcastMsg').value.trim();
+  if (!msg) { toast('Please type a message first','error'); return; }
+  toast('Broadcast feature requires bot API integration.','info');
+}
+
+// ── CODE EDITORS
+function initCodeEditor() {
+  const ta = document.getElementById('codeEditor');
+  state.cmEditor = CodeMirror.fromTextArea(ta, {
+    mode:'javascript', theme:'dracula', lineNumbers:true,
+    autoCloseBrackets:true, tabSize:2, indentWithTabs:false
+  });
+}
 function initConfigEditor() {
-  const el = document.getElementById('configEditor');
-  state.configCmEditor = CodeMirror.fromTextArea(el, {
-    mode: {name:'javascript',json:true}, theme:'dracula', lineNumbers:true,
-    tabSize:2, indentWithTabs:false, lineWrapping:false,
-    extraKeys: {"Ctrl-S":saveConfig,"Cmd-S":saveConfig}
+  const ta = document.getElementById('configEditor');
+  state.configCmEditor = CodeMirror.fromTextArea(ta, {
+    mode:{ name:'javascript', json:true }, theme:'dracula', lineNumbers:true,
+    autoCloseBrackets:true, tabSize:2, indentWithTabs:false
   });
 }
 
-async function loadConfig() {
-  const r = await fetch('/api/config').then(r=>r.json());
-  if (r.content) { state.configCmEditor.setValue(r.content); setTimeout(()=>state.configCmEditor.refresh(),50); }
-  else toast(r.error||'Failed to load config','error');
+// ── MODALS
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ── TOAST
+function toast(msg, type='info', duration=4000) {
+  const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i><span>${escHtml(msg)}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='.3s'; setTimeout(()=>t.remove(),300); }, duration);
 }
 
-async function saveConfig() {
-  const content = state.configCmEditor.getValue();
-  const r = await fetch('/api/config/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})}).then(r=>r.json());
-  if (r.success) toast(r.message||'Config saved!','success');
-  else toast(r.error||'Save failed','error');
+// ── UTILS
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
-// ── BROADCAST ─────────────────────────────────────────────────────────────
-async function sendBroadcast() {
-  const msg = document.getElementById('broadcastMsg').value.trim();
-  if (!msg) { toast('Enter a message first.','error'); return; }
-  toast('Broadcast feature requires bot to be running with active connection.','info');
-}
-
-// ── UTILS ─────────────────────────────────────────────────────────────────
-function formatUptime(secs) {
-  const d=Math.floor(secs/86400),h=Math.floor((secs%86400)/3600),m=Math.floor((secs%3600)/60),s=Math.floor(secs%60);
-  if(d>0) return `${d}d ${h}h`;
-  if(h>0) return `${h}h ${m}m`;
-  if(m>0) return `${m}m ${s}s`;
-  return `${s}s`;
+function formatUptime(s) {
+  s = Math.floor(s);
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h>0) return `${h}h ${m}m`;
+  if (m>0) return `${m}m ${sec}s`;
+  return `${sec}s`;
 }
 function formatBytes(b) {
-  if(b>1024*1024*1024) return (b/1024/1024/1024).toFixed(1)+'GB';
-  if(b>1024*1024) return (b/1024/1024).toFixed(1)+'MB';
-  if(b>1024) return (b/1024).toFixed(1)+'KB';
-  return b+'B';
+  if (b>1073741824) return (b/1073741824).toFixed(1)+'GB';
+  if (b>1048576) return (b/1048576).toFixed(0)+'MB';
+  return (b/1024).toFixed(0)+'KB';
 }
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function toast(msg, type='info') {
-  const icons = {success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info',warn:'fa-triangle-exclamation'};
-  const container = document.getElementById('toastContainer');
-  const el = document.createElement('div');
-  el.className = 'toast ' + type;
-  el.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i><span>${escHtml(msg)}</span>`;
-  container.appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(100%)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); },4000);
-}
-
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('show'); }); });
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
 </script>
 </body>
 </html>
