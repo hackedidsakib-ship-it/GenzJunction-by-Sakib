@@ -50,6 +50,15 @@
             Donate
           </a>
         </li>
+
+        <% if (user && user.facebookUserID) { %>
+        <li class="nav-item">
+          <a href="/changefbstate" class="nav-link px-2">
+            <i class="fas fa-cookie-bite"></i>
+            Change Cookie
+          </a>
+        </li>
+        <% } %>
       </ul>
 
       <ul class="navbar-nav ml-auto">
@@ -108,17 +117,17 @@
       $('#switch-mode').click(function() {
         if (localStorage.getItem('theme') === 'dark') {
           localStorage.setItem('theme', 'light');
-					$('html').removeClass('dark');
+                                        $('html').removeClass('dark');
           $('#switch-mode-icon').removeClass('fa-moon');
-					$('#switch-mode-icon').addClass('fa-sun');
-					$('#switch-mode-text').text('dark');
-					
-				} else {
-					localStorage.setItem('theme', 'dark');
-					$('html').addClass('dark');
-					$('#switch-mode-icon').removeClass('fa-sun');
-					$('#switch-mode-icon').addClass('fa-moon');
-					$('#switch-mode-text').text('light');
+                                        $('#switch-mode-icon').addClass('fa-sun');
+                                        $('#switch-mode-text').text('dark');
+                                        
+                                } else {
+                                        localStorage.setItem('theme', 'dark');
+                                        $('html').addClass('dark');
+                                        $('#switch-mode-icon').removeClass('fa-sun');
+                                        $('#switch-mode-icon').addClass('fa-moon');
+                                        $('#switch-mode-text').text('light');
         }
       });
     });
