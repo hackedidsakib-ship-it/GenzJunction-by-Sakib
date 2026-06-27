@@ -1,48 +1,108 @@
-/**
- * @author NTKhang
- * ! The source code is written by NTKhang, please don't change the author's name everywhere. Thank you for using
- * ! Official source code: https://github.com/ntkhang03/Goat-Bot-V2
- * ! If you do not download the source code from the above address, you are using an unknown version and at risk of having your account hacked
- *
- * English:
- * ! Please do not change the below code, it is very important for the project.
- * It is my motivation to maintain and develop the project for free.
- * ! If you change it, you will be banned forever
- * Thank you for using
- *
- * Vietnamese:
- * ! Vui lòng không thay đổi mã bên dưới, nó rất quan trọng đối với dự án.
- * Nó là động lực để tôi duy trì và phát triển dự án miễn phí.
- * ! Nếu thay đổi nó, bạn sẽ bị cấm vĩnh viễn
- * Cảm ơn bạn đã sử dụng
- */
-
 const { spawn } = require("child_process");
-const log = require("./logger/log.js");
+const controlPanel = require("./controlPanel/server.js");
 
-function startProject() {
-	const child = spawn("node", ["Goat.js"], {
-		cwd: __dirname,
-		stdio: "inherit",
-		shell: true
-	});
+let botProcess = null;
+let botStatus = "stopped";
+let logBuffer = [];
+const MAX_LOG_LINES = 500;
+const sseClients = [];
 
-	child.on("close", (code) => {
-		if (code == 2) {
-			log.info("Restarting Project...");
-			startProject();
-		}
-	});
+global.panelState = {
+  getBotProcess: () => botProcess,
+  getBotStatus: () => botStatus,
+  getLogs: () => logBuffer,
+  getSseClients: () => sseClients,
+  restartBot,
+  stopBot,
+  startBot
+};
+
+function broadcastSSE(event, data) {
+  const msg = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+  for (let i = sseClients.length - 1; i >= 0; i--) {
+    try { sseClients[i].write(msg); } catch (e) { sseClients.splice(i, 1); }
+  }
 }
 
-startProject();
-const express = require('express');
-const app = express();
+function addLog(line, type = "info") {
+  const entry = { time: new Date().toISOString(), msg: String(line).trim(), type };
+  if (!entry.msg) return;
+  logBuffer.push(entry);
+  if (logBuffer.length > MAX_LOG_LINES) logBuffer.shift();
+  broadcastSSE("log", entry);
+}
 
-app.get('/', (req, res) => {
-  res.send('Bot is running!');
-});
+function startBot() {
+  if (botProcess) return;
+  botStatus = "starting";
+  broadcastSSE("status", botStatus);
+  addLog("Starting bot process...", "info");
 
-app.listen(3000, () => {
-  console.log('Uptime server running on port 3000');
+  botProcess = spawn("node", ["Goat.js"], {
+    cwd: __dirname,
+    shell: true,
+    env: { ...process.env }
+  });
+
+  if (botProcess.stdout) {
+    botProcess.stdout.on("data", (d) => {
+      String(d).split("\n").filter(l => l.trim()).forEach(l => addLog(l, "info"));
+    });
+  }
+  if (botProcess.stderr) {
+    botProcess.stderr.on("data", (d) => {
+      String(d).split("\n").filter(l => l.trim()).forEach(l => addLog(l, "error"));
+    });
+  }
+
+  botProcess.on("spawn", () => {
+    botStatus = "running";
+    broadcastSSE("status", botStatus);
+    addLog("Bot process started.", "success");
+  });
+
+  botProcess.on("close", (code) => {
+    addLog(`Bot exited (code ${code}).`, code === 0 ? "info" : "error");
+    botProcess = null;
+    if (code === 2) {
+      botStatus = "restarting";
+      broadcastSSE("status", botStatus);
+      addLog("Auto-restarting bot...", "info");
+      setTimeout(startBot, 2000);
+    } else {
+      botStatus = "stopped";
+      broadcastSSE("status", botStatus);
+    }
+  });
+
+  botProcess.on("error", (err) => {
+    addLog(`Bot error: ${err.message}`, "error");
+    botProcess = null;
+    botStatus = "error";
+    broadcastSSE("status", botStatus);
+  });
+}
+
+function stopBot() {
+  if (botProcess) {
+    botProcess.removeAllListeners("close");
+    botProcess.kill("SIGTERM");
+    botProcess = null;
+    botStatus = "stopped";
+    addLog("Bot stopped by admin.", "warn");
+    broadcastSSE("status", botStatus);
+  }
+}
+
+function restartBot() {
+  addLog("Restarting bot...", "warn");
+  stopBot();
+  setTimeout(startBot, 1500);
+}
+
+startBot();
+
+const PORT = process.env.PORT || 5000;
+controlPanel.listen(PORT, () => {
+  console.log(`GenZ Junction Control Panel: http://localhost:${PORT}`);
 });

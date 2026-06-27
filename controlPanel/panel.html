@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GenZ Junction By Sakib</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-primary:#0a0b14;
+  --bg-secondary:#0f1020;
+  --bg-card:#131525;
+  --bg-hover:#1a1d35;
+  --accent:#7c3aed;
+  --accent2:#06b6d4;
+  --accent3:#f59e0b;
+  --success:#10b981;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --text-primary:#e2e8f0;
+  --text-muted:#64748b;
+  --border:#1e2340;
+  --sidebar-width:260px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s ease;}
+#loader.hide{opacity:0;pointer-events:none;}
+.loader-logo{width:180px;height:180px;object-fit:contain;animation:logoPulse 1.5s ease-in-out infinite;border-radius:16px;box-shadow:0 0 60px rgba(124,58,237,.6);}
+@keyframes logoPulse{0%,100%{transform:scale(1);box-shadow:0 0 60px rgba(124,58,237,.6);}50%{transform:scale(1.06);box-shadow:0 0 100px rgba(6,182,212,.8);}}
+.loader-title{margin-top:24px;font-size:28px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;}
+.loader-sub{margin-top:8px;color:var(--text-muted);font-size:14px;letter-spacing:2px;text-transform:uppercase;}
+.loader-bar{margin-top:32px;width:220px;height:3px;background:#1e2340;border-radius:99px;overflow:hidden;}
+.loader-bar-inner{height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);animation:loadBar 3s ease-in-out forwards;}
+@keyframes loadBar{0%{width:0%;}100%{width:100%;}}
+
+/* ── LOGIN ── */
+#loginPage{position:fixed;inset:0;background:var(--bg-primary);display:none;align-items:center;justify-content:center;z-index:9000;background-image:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,.12) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(6,182,212,.08) 0%,transparent 50%);}
+#loginPage.show{display:flex;}
+.login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,.5);}
+.login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
+.login-logo img{width:80px;height:80px;object-fit:contain;border-radius:12px;box-shadow:0 0 30px rgba(124,58,237,.5);}
+.login-logo h1{margin-top:16px;font-size:22px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.login-logo p{color:var(--text-muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.form-input{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px 16px 12px 44px;color:var(--text-primary);font-size:14px;outline:none;transition:border .2s;}
+.form-input:focus{border-color:var(--accent);}
+.input-wrap{position:relative;}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.btn-login:hover{background:linear-gradient(135deg,#6d28d9,#4c1d95);transform:translateY(-1px);box-shadow:0 8px 25px rgba(124,58,237,.4);}
+.login-err{color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none;}
+
+/* ── MAIN LAYOUT ── */
+#app{display:none;height:100vh;overflow:hidden;}
+#app.show{display:flex;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-width);background:var(--bg-secondary);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;flex-shrink:0;}
+.sidebar-brand{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.sidebar-brand img{width:40px;height:40px;object-fit:contain;border-radius:8px;box-shadow:0 0 16px rgba(124,58,237,.5);}
+.sidebar-brand-text{flex:1;min-width:0;}
+.sidebar-brand-text h2{font-size:14px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar-brand-text p{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0;}
+.sidebar-nav::-webkit-scrollbar{width:3px;}
+.sidebar-nav::-webkit-scrollbar-thumb{background:var(--border);}
+.nav-section{padding:8px 16px 4px;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-radius:8px;margin:1px 8px;transition:all .2s;color:var(--text-muted);font-size:13px;font-weight:500;border:1px solid transparent;position:relative;}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary);}
+.nav-item.active{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(6,182,212,.1));color:var(--text-primary);border-color:rgba(124,58,237,.3);}
+.nav-item.active i{color:var(--accent);}
+.nav-item i{width:16px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border);}
+.bot-status-indicator{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-card);border-radius:10px;border:1px solid var(--border);}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s;}
+.status-dot.running{background:var(--success);box-shadow:0 0 8px var(--success);animation:blink 2s infinite;}
+.status-dot.stopped{background:var(--danger);}
+.status-dot.starting,.status-dot.restarting{background:var(--warn);animation:blink 1s infinite;}
+.status-dot.error{background:var(--danger);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+.status-text{flex:1;min-width:0;}
+.status-text span{display:block;font-size:11px;font-weight:600;color:var(--text-primary);}
+.status-text small{font-size:10px;color:var(--text-muted);}
+
+/* ── MAIN CONTENT ── */
+.main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:60px;background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;}
+.topbar-title{font-size:18px;font-weight:700;flex:1;}
+.topbar-title span{color:var(--text-muted);font-weight:400;font-size:14px;margin-left:8px;}
+.topbar-actions{display:flex;gap:10px;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;}
+.btn-primary:hover{box-shadow:0 4px 15px rgba(124,58,237,.4);transform:translateY(-1px);}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
+.btn-success:hover{box-shadow:0 4px 15px rgba(16,185,129,.4);}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;}
+.btn-danger:hover{box-shadow:0 4px 15px rgba(239,68,68,.4);}
+.btn-secondary{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--bg-hover);}
+.btn-warn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
+.btn-warn:hover{box-shadow:0 4px 15px rgba(245,158,11,.4);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.page-body{flex:1;overflow-y:auto;padding:24px;}
+.page-body::-webkit-scrollbar{width:4px;}
+.page-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+
+/* ── PAGES ── */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-header h3{font-size:15px;font-weight:700;flex:1;}
+.card-header i{color:var(--accent);font-size:16px;}
+.card-body{padding:20px;}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--sc-color1,.1) 0%,transparent 60%);opacity:.1;}
+.stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+.stat-icon.purple{background:rgba(124,58,237,.2);color:#7c3aed;}
+.stat-icon.cyan{background:rgba(6,182,212,.2);color:#06b6d4;}
+.stat-icon.green{background:rgba(16,185,129,.2);color:#10b981;}
+.stat-icon.amber{background:rgba(245,158,11,.2);color:#f59e0b;}
+.stat-icon.red{background:rgba(239,68,68,.2);color:#ef4444;}
+.stat-value{font-size:28px;font-weight:800;line-height:1;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:500;}
+.stat-change{font-size:11px;margin-top:8px;color:var(--success);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{height:6px;background:#1e2340;border-radius:99px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+.progress-fill.green{background:linear-gradient(90deg,#10b981,#059669);}
+.progress-fill.purple{background:linear-gradient(90deg,#7c3aed,#5b21b6);}
+.progress-fill.amber{background:linear-gradient(90deg,#f59e0b,#d97706);}
+.progress-fill.red{background:linear-gradient(90deg,#ef4444,#dc2626);}
+
+/* ── FILE MANAGER ── */
+.fm-layout{display:grid;grid-template-columns:280px 1fr;gap:0;height:calc(100vh - 109px);overflow:hidden;}
+.fm-tree{background:var(--bg-card);border:1px solid var(--border);border-radius:14px 0 0 14px;overflow-y:auto;padding:8px;}
+.fm-tree::-webkit-scrollbar{width:3px;}
+.fm-tree::-webkit-scrollbar-thumb{background:var(--border);}
+.fm-editor-pane{background:var(--bg-secondary);border:1px solid var(--border);border-left:none;border-radius:0 14px 14px 0;display:flex;flex-direction:column;overflow:hidden;}
+.fm-editor-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.fm-editor-header span{flex:1;font-size:13px;font-weight:600;color:var(--text-muted);}
+.fm-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);gap:12px;}
+.fm-empty i{font-size:48px;opacity:.3;}
+.fm-editor-wrap{flex:1;overflow:hidden;}
+.fm-editor-wrap .CodeMirror{height:100%;font-size:13px;line-height:1.6;}
+.tree-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;transition:background .15s;user-select:none;}
+.tree-item:hover{background:var(--bg-hover);}
+.tree-item.selected{background:rgba(124,58,237,.15);color:var(--accent);}
+.tree-item i{font-size:12px;width:14px;flex-shrink:0;}
+.tree-item i.fa-folder,.tree-item i.fa-folder-open{color:#f59e0b;}
+.tree-item i.fa-file-code{color:#06b6d4;}
+.tree-item i.fa-file-alt{color:var(--text-muted);}
+.tree-children{padding-left:16px;}
+.tree-toggle{width:12px;font-size:10px;color:var(--text-muted);flex-shrink:0;transition:transform .15s;}
+.tree-toggle.open{transform:rotate(90deg);}
+.fm-actions{padding:8px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
+
+/* ── LOGS ── */
+.log-container{background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;height:calc(100vh - 200px);overflow-y:auto;font-family:'Courier New',monospace;font-size:12px;line-height:1.6;}
+.log-container::-webkit-scrollbar{width:4px;}
+.log-container::-webkit-scrollbar-thumb{background:var(--border);}
+.log-line{padding:1px 0;}
+.log-line .log-time{color:#475569;margin-right:8px;}
+.log-line.info .log-msg{color:#94a3b8;}
+.log-line.error .log-msg{color:#f87171;}
+.log-line.warn .log-msg{color:#fbbf24;}
+.log-line.success .log-msg{color:#4ade80;}
+
+/* ── COOKIE SECTION ── */
+.cookie-status-bar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600;}
+.cookie-status-bar.connected{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#10b981;}
+.cookie-status-bar.disconnected{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#ef4444;}
+.cookie-textarea{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text-primary);font-family:'Courier New',monospace;font-size:12px;min-height:140px;resize:vertical;outline:none;line-height:1.5;}
+.cookie-textarea:focus{border-color:var(--accent);}
+.connect-progress{margin-top:12px;display:none;}
+.connect-progress-bar{height:4px;background:#1e2340;border-radius:99px;overflow:hidden;}
+.connect-progress-inner{height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#06b6d4);border-radius:99px;transition:width .3s;}
+
+/* ── COMMANDS TABLE ── */
+.cmd-table{width:100%;border-collapse:collapse;}
+.cmd-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+.cmd-table td{padding:10px 14px;border-bottom:1px solid rgba(30,35,64,.5);font-size:13px;vertical-align:middle;}
+.cmd-table tr:last-child td{border-bottom:none;}
+.cmd-table tr:hover td{background:rgba(255,255,255,.02);}
+.toggle-switch{position:relative;display:inline-block;width:40px;height:20px;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:#1e2340;border-radius:20px;cursor:pointer;transition:.3s;}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:var(--text-muted);border-radius:50%;transition:.3s;}
+input:checked+.toggle-slider{background:var(--success);}
+input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600;}
+.badge-success{background:rgba(16,185,129,.15);color:#10b981;}
+.badge-danger{background:rgba(239,68,68,.15);color:#ef4444;}
+.badge-purple{background:rgba(124,58,237,.15);color:#7c3aed;}
+
+/* ── CONFIG EDITOR ── */
+.config-editor-wrap{height:calc(100vh - 220px);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.config-editor-wrap .CodeMirror{height:100%;font-size:13px;}
+
+/* ── BROADCAST ── */
+.broadcast-textarea{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text-primary);font-family:'Segoe UI',sans-serif;font-size:14px;min-height:120px;resize:vertical;outline:none;margin-bottom:12px;}
+.broadcast-textarea:focus{border-color:var(--accent);}
+
+/* ── ALERTS & TOASTS ── */
+.toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:280px;display:flex;align-items:center;gap:12px;font-size:13px;animation:slideIn .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.4);}
+.toast.success{border-left:3px solid var(--success);}
+.toast.error{border-left:3px solid var(--danger);}
+.toast.info{border-left:3px solid var(--accent2);}
+.toast i{font-size:16px;}
+.toast.success i{color:var(--success);}
+.toast.error i{color:var(--danger);}
+.toast.info i{color:var(--accent2);}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.5);}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+.modal p{color:var(--text-muted);font-size:14px;margin-bottom:20px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.form-control{width:100%;background:#0a0b14;border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-size:13px;outline:none;margin-bottom:14px;}
+.form-control:focus{border-color:var(--accent);}
+
+/* ── SYSTEM MONITOR ── */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.gauge-label{font-size:12px;color:var(--text-muted);font-weight:600;}
+.gauge-value{font-size:24px;font-weight:800;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-row span:first-child{color:var(--text-muted);}
+.info-row span:last-child{font-weight:600;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .fm-layout{grid-template-columns:1fr;}
+  .fm-tree{display:none;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <img src="/images/genz-logo.webp" class="loader-logo" alt="GenZ Junction Logo"/>
+  <div class="loader-title">GenZ Junction</div>
+  <div class="loader-sub">By Sakib &bull; Control Panel</div>
+  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="/images/genz-logo.webp" alt="Logo"/>
+      <h1>GenZ Junction By Sakib</h1>
+      <p>Control Panel Access</p>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" class="form-input" id="loginPass" placeholder="Enter panel password" autocomplete="off"/>
+      </div>
+    </div>
+    <button class="btn-login" onclick="doLogin()">
+      <i class="fa-solid fa-right-to-bracket"></i> Sign In
+    </button>
+    <div class="login-err" id="loginErr">
+      <i class="fa-solid fa-circle-exclamation"></i> Incorrect password. Try again.
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <img src="/images/genz-logo.webp" alt="Logo"/>
+      <div class="sidebar-brand-text">
+        <h2>GenZ Junction</h2>
+        <p>By Sakib</p>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showPage('overview')"><i class="fa-solid fa-gauge-high"></i> Overview</div>
+      <div class="nav-item" onclick="showPage('files')"><i class="fa-solid fa-folder-tree"></i> File Manager</div>
+      <div class="nav-item" onclick="showPage('logs')"><i class="fa-solid fa-terminal"></i> Live Logs</div>
+
+      <div class="nav-section">Bot</div>
+      <div class="nav-item" onclick="showPage('cookie')"><i class="fa-solid fa-cookie"></i> Cookie Manager</div>
+      <div class="nav-item" onclick="showPage('botcontrol')"><i class="fa-solid fa-robot"></i> Bot Control</div>
+      <div class="nav-item" onclick="showPage('commands')"><i class="fa-solid fa-list-check"></i> Commands</div>
+      <div class="nav-item" onclick="showPage('broadcast')"><i class="fa-solid fa-bullhorn"></i> Broadcast</div>
+
+      <div class="nav-section">Settings</div>
+      <div class="nav-item" onclick="showPage('config')"><i class="fa-solid fa-sliders"></i> Config Editor</div>
+      <div class="nav-item" onclick="showPage('system')"><i class="fa-solid fa-microchip"></i> System Monitor</div>
+
+      <div class="nav-section">Account</div>
+      <div class="nav-item" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="bot-status-indicator">
+        <div class="status-dot" id="sidebarDot"></div>
+        <div class="status-text">
+          <span id="sidebarStatus">Checking...</span>
+          <small id="sidebarUptime">Loading...</small>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Overview <span id="topbarSub">Dashboard</span></div>
+      <div class="topbar-actions" id="topbarActions"></div>
+    </div>
+    <div class="page-body">
+
+      <!-- OVERVIEW PAGE -->
+      <div class="page active" id="page-overview">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-robot"></i></div>
+            <div class="stat-value" id="st-status">--</div>
+            <div class="stat-label">Bot Status</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon cyan"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-value" id="st-uptime">--</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-terminal"></i></div>
+            <div class="stat-value" id="st-cmds">--</div>
+            <div class="stat-label">Total Commands</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber"><i class="fa-solid fa-bolt"></i></div>
+            <div class="stat-value" id="st-events">--</div>
+            <div class="stat-label">Total Events</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fa-solid fa-memory"></i></div>
+            <div class="stat-value" id="st-mem">--</div>
+            <div class="stat-label">Memory Used</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-brands fa-node-js"></i></div>
+            <div class="stat-value" id="st-node">--</div>
+            <div class="stat-label">Node Version</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-chart-area"></i><h3>Memory Usage</h3></div>
+            <div class="card-body">
+              <canvas id="memChart" height="180"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-list"></i><h3>Recent Logs</h3></div>
+            <div class="card-body" style="padding:0;">
+              <div id="recentLogs" style="height:200px;overflow-y:auto;padding:12px;font-family:monospace;font-size:12px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILE MANAGER PAGE -->
+      <div class="page" id="page-files">
+        <div class="fm-layout">
+          <div class="fm-tree" id="fileTree">
+            <div style="padding:8px;color:var(--text-muted);font-size:12px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading files...</div>
+          </div>
+          <div class="fm-editor-pane">
+            <div class="fm-actions">
+              <button class="btn btn-primary btn-sm" onclick="saveFile()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+              <button class="btn btn-secondary btn-sm" onclick="newFileModal()"><i class="fa-solid fa-file-circle-plus"></i> New File</button>
+              <button class="btn btn-secondary btn-sm" onclick="newFolderModal()"><i class="fa-solid fa-folder-plus"></i> New Folder</button>
+              <button class="btn btn-danger btn-sm" id="deleteFileBtn" onclick="deleteCurrentFile()" style="display:none"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+            <div class="fm-editor-header">
+              <i class="fa-solid fa-file-code" style="color:var(--accent2)"></i>
+              <span id="currentFilePath">No file selected</span>
+            </div>
+            <div class="fm-empty" id="fmEmpty">
+              <i class="fa-solid fa-code"></i>
+              <p>Select a file to edit</p>
+            </div>
+            <div class="fm-editor-wrap" id="fmEditorWrap" style="display:none">
+              <textarea id="codeEditor"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE LOGS PAGE -->
+      <div class="page" id="page-logs">
+        <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;">
+          <button class="btn btn-danger btn-sm" onclick="clearLogs()"><i class="fa-solid fa-trash"></i> Clear</button>
+          <button class="btn btn-secondary btn-sm" onclick="toggleAutoScroll()"><i class="fa-solid fa-arrows-down-to-line" id="autoScrollIcon"></i> <span id="autoScrollText">Auto-scroll ON</span></button>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <span class="badge badge-success" id="logCountBadge">0 lines</span>
+          </div>
+        </div>
+        <div class="log-container" id="logContainer"></div>
+      </div>
+
+      <!-- COOKIE PAGE -->
+      <div class="page" id="page-cookie">
+        <div class="card" style="max-width:700px;">
+          <div class="card-header"><i class="fa-solid fa-cookie-bite"></i><h3>Facebook Cookie (FBState) Manager</h3></div>
+          <div class="card-body">
+            <div id="cookieStatusBar" class="cookie-status-bar disconnected">
+              <i class="fa-solid fa-circle-xmark"></i>
+              <span id="cookieStatusText">Not connected</span>
+            </div>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;"><i class="fa-solid fa-circle-info" style="color:var(--accent2);margin-right:6px;"></i>Paste your Facebook cookie (appstate/fbstate JSON) below. The bot will restart automatically after connecting.</p>
+            <textarea class="cookie-textarea" id="cookieInput" placeholder="Paste your Facebook cookie JSON here..."></textarea>
+            <div class="connect-progress" id="connectProgress">
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;" id="connectProgressText">Connecting...</div>
+              <div class="connect-progress-bar"><div class="connect-progress-inner" id="connectProgressInner"></div></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:12px;">
+              <button class="btn btn-success" onclick="connectCookie()"><i class="fa-solid fa-plug-circle-plus"></i> Connect</button>
+              <button class="btn btn-danger" onclick="deleteCookie()"><i class="fa-solid fa-plug-circle-minus"></i> Disconnect &amp; Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="max-width:700px;margin-top:16px;">
+          <div class="card-header"><i class="fa-solid fa-circle-question"></i><h3>How to get Facebook Cookie?</h3></div>
+          <div class="card-body">
+            <ol style="color:var(--text-muted);font-size:13px;line-height:2;padding-left:16px;">
+              <li>Install browser extension: <strong style="color:var(--text-primary)">Cookie Editor</strong> or <strong style="color:var(--text-primary)">EditThisCookie</strong></li>
+              <li>Go to <strong style="color:var(--text-primary)">facebook.com</strong> and log in with your bot account</li>
+              <li>Open the extension and export cookies as JSON</li>
+              <li>Paste the JSON here and click Connect</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOT CONTROL PAGE -->
+      <div class="page" id="page-botcontrol">
+        <div class="grid-2" style="max-width:700px;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-robot"></i><h3>Bot Control</h3></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+              <button class="btn btn-success" onclick="botAction('start')" style="justify-content:center;padding:14px;"><i class="fa-solid fa-play"></i> Start Bot</button>
+              <button class="btn btn-warn" onclick="botAction('restart')" style="justify-content:center;padding:14px;"><i class="fa-solid fa-rotate"></i> Restart Bot</button>
+              <button class="btn btn-danger" onclick="botAction('stop')" style="justify-content:center;padding:14px;"><i class="fa-solid fa-stop"></i> Stop Bot</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-circle-info"></i><h3>Bot Info</h3></div>
+            <div class="card-body">
+              <div class="info-row"><span>Status</span><span id="bc-status">--</span></div>
+              <div class="info-row"><span>Process ID</span><span id="bc-pid">--</span></div>
+              <div class="info-row"><span>Uptime</span><span id="bc-uptime">--</span></div>
+              <div class="info-row"><span>Node.js</span><span id="bc-node">--</span></div>
+              <div class="info-row"><span>Platform</span><span id="bc-platform">--</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMANDS PAGE -->
+      <div class="page" id="page-commands">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-list-check"></i>
+            <h3>Command Manager</h3>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+              <input type="text" id="cmdSearch" class="form-control" style="margin:0;width:200px;" placeholder="Search commands..." oninput="filterCmds()"/>
+              <span class="badge badge-purple" id="cmdCountBadge">0 commands</span>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;overflow-x:auto;">
+            <table class="cmd-table">
+              <thead>
+                <tr>
+                  <th>Command Name</th>
+                  <th>File</th>
+                  <th>Status</th>
+                  <th style="text-align:center;">Toggle</th>
+                </tr>
+              </thead>
+              <tbody id="cmdTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BROADCAST PAGE -->
+      <div class="page" id="page-broadcast">
+        <div class="card" style="max-width:700px;">
+          <div class="card-header"><i class="fa-solid fa-bullhorn"></i><h3>Broadcast Message</h3></div>
+          <div class="card-body">
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;"><i class="fa-solid fa-triangle-exclamation" style="color:var(--warn);margin-right:6px;"></i>This feature requires the bot to be online and connected. Broadcast will be sent to all active groups.</p>
+            <label style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:8px;">Message</label>
+            <textarea class="broadcast-textarea" id="broadcastMsg" placeholder="Type your broadcast message here..."></textarea>
+            <div style="display:flex;justify-content:flex-end;">
+              <button class="btn btn-primary" onclick="sendBroadcast()"><i class="fa-solid fa-paper-plane"></i> Send Broadcast</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIG EDITOR PAGE -->
+      <div class="page" id="page-config">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-sliders"></i>
+            <h3>Config Editor (config.json)</h3>
+            <div style="margin-left:auto;display:flex;gap:10px;">
+              <button class="btn btn-primary btn-sm" onclick="saveConfig()"><i class="fa-solid fa-floppy-disk"></i> Save Config</button>
+              <button class="btn btn-warn btn-sm" onclick="botAction('restart')"><i class="fa-solid fa-rotate"></i> Save &amp; Restart</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="config-editor-wrap">
+              <textarea id="configEditor"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM MONITOR PAGE -->
+      <div class="page" id="page-system">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon cyan"><i class="fa-solid fa-memory"></i></div>
+            <div class="stat-value" id="sys-memPct">--%</div>
+            <div class="stat-label">Memory Used</div>
+            <div class="progress-bar"><div class="progress-fill green" id="sys-memBar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-microchip"></i></div>
+            <div class="stat-value" id="sys-cpu">--</div>
+            <div class="stat-label">CPU Load Avg</div>
+            <div class="progress-bar"><div class="progress-fill purple" id="sys-cpuBar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-value" id="sys-uptime">--</div>
+            <div class="stat-label">Server Uptime</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber"><i class="fa-solid fa-server"></i></div>
+            <div class="stat-value" id="sys-platform">--</div>
+            <div class="stat-label">Platform</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-circle-info"></i><h3>System Info</h3></div>
+            <div class="card-body" id="sysInfoBody"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-chart-line"></i><h3>Memory Over Time</h3></div>
+            <div class="card-body"><canvas id="sysChart" height="180"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- page-body -->
+  </div><!-- main-content -->
+</div><!-- app -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="newFileModal">
+  <div class="modal">
+    <h3><i class="fa-solid fa-file-circle-plus" style="color:var(--accent)"></i> New File</h3>
+    <p>Enter the path for the new file (e.g. scripts/cmds/myCmd.js)</p>
+    <input type="text" class="form-control" id="newFilePath" placeholder="path/to/file.js"/>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('newFileModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createFile()"><i class="fa-solid fa-check"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="newFolderModal">
+  <div class="modal">
+    <h3><i class="fa-solid fa-folder-plus" style="color:var(--accent3)"></i> New Folder</h3>
+    <p>Enter the path for the new folder (e.g. scripts/myFolder)</p>
+    <input type="text" class="form-control" id="newFolderPath" placeholder="path/to/folder"/>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('newFolderModal')">Cancel</button>
+      <button class="btn btn-warn" onclick="createFolder()"><i class="fa-solid fa-check"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle"></h3>
+    <p id="confirmMsg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+const state = {
+  currentPage: 'overview',
+  currentFile: null,
+  autoScroll: true,
+  logCount: 0,
+  cmEditor: null,
+  configCmEditor: null,
+  memHistory: [],
+  statsInterval: null,
+  treeData: []
+};
+let sseSource = null;
+
+// ── LOADER ────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    checkAuthAndShow();
+  }, 3000);
+});
+
+async function checkAuthAndShow() {
+  const r = await fetch('/auth/status').then(r=>r.json());
+  if (r.authenticated) showApp();
+  else showLogin();
+}
+
+function showLogin() { document.getElementById('loginPage').classList.add('show'); }
+function showApp() {
+  document.getElementById('loginPage').classList.remove('show');
+  document.getElementById('app').classList.add('show');
+  initApp();
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+async function doLogin() {
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  const r = await fetch('/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pass})}).then(r=>r.json());
+  if (r.success) showApp();
+  else { err.style.display = 'block'; document.getElementById('loginPass').value = ''; }
+}
+async function doLogout() {
+  await fetch('/auth/logout',{method:'POST'});
+  location.reload();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+const pageTitles = {
+  overview:   ['Overview',     'Dashboard'],
+  files:      ['File Manager', 'Browse & Edit Files'],
+  logs:       ['Live Logs',    'Real-time Bot Output'],
+  cookie:     ['Cookie Manager','Facebook FBState'],
+  botcontrol: ['Bot Control',  'Start / Stop / Restart'],
+  commands:   ['Commands',     'Enable & Disable'],
+  broadcast:  ['Broadcast',    'Send to All Groups'],
+  config:     ['Config Editor','config.json'],
+  system:     ['System Monitor','Server Resources']
+};
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelector(`.nav-item[onclick*="${page}"]`).classList.add('active');
+  state.currentPage = page;
+  const [title, sub] = pageTitles[page] || [page,''];
+  document.getElementById('topbarTitle').innerHTML = `${title} <span>${sub}</span>`;
+  if (page==='files' && state.treeData.length===0) loadFileTree();
+  if (page==='commands') loadCommands();
+  if (page==='config') loadConfig();
+  if (page==='logs') setupLogs();
+  if (page==='system') loadSystemStats();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+function initApp() {
+  initCodeEditor();
+  initConfigEditor();
+  setupSSE();
+  fetchStats();
+  state.statsInterval = setInterval(fetchStats, 5000);
+}
+
+// ── SSE ───────────────────────────────────────────────────────────────────
+function setupSSE() {
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  sseSource = new EventSource('/api/sse/logs');
+  sseSource.addEventListener('bulk', e => {
+    try { JSON.parse(e.data).forEach(entry => appendLog(entry)); } catch {}
+  });
+  sseSource.addEventListener('log', e => {
+    try { appendLog(JSON.parse(e.data)); } catch {}
+  });
+  sseSource.addEventListener('status', e => {
+    try { updateBotStatus(JSON.parse(e.data)); } catch {}
+  });
+  sseSource.onerror = () => {
+    setTimeout(setupSSE, 5000);
+  };
+}
+function setupLogs() {}
+
+// ── STATS ─────────────────────────────────────────────────────────────────
+let memChart, sysChart;
+async function fetchStats() {
+  const r = await fetch('/api/stats').then(r=>r.json()).catch(()=>null);
+  if (!r) return;
+  updateBotStatus(r.botStatus);
+  document.getElementById('st-status').textContent = r.botStatus.toUpperCase();
+  document.getElementById('st-uptime').textContent = formatUptime(r.uptime);
+  document.getElementById('st-cmds').textContent = r.totalCommands;
+  document.getElementById('st-events').textContent = r.totalEvents;
+  document.getElementById('st-mem').textContent = formatBytes(r.memory.used);
+  document.getElementById('st-node').textContent = r.nodeVersion;
+  document.getElementById('bc-status').textContent = r.botStatus;
+  document.getElementById('bc-node').textContent = r.nodeVersion;
+  document.getElementById('bc-platform').textContent = r.platform;
+  document.getElementById('bc-uptime').textContent = formatUptime(r.uptime);
+  document.getElementById('sidebarUptime').textContent = formatUptime(r.uptime);
+
+  // System monitor
+  if (state.currentPage === 'system') {
+    document.getElementById('sys-memPct').textContent = r.memory.percent + '%';
+    document.getElementById('sys-memBar').style.width = r.memory.percent + '%';
+    document.getElementById('sys-cpu').textContent = r.cpu.load;
+    const cpuPct = Math.min(100, parseFloat(r.cpu.load) * 20);
+    document.getElementById('sys-cpuBar').style.width = cpuPct + '%';
+    document.getElementById('sys-uptime').textContent = formatUptime(r.uptime);
+    document.getElementById('sys-platform').textContent = r.platform;
+    document.getElementById('sysInfoBody').innerHTML = `
+      <div class="info-row"><span>Total Memory</span><span>${formatBytes(r.memory.total)}</span></div>
+      <div class="info-row"><span>Used Memory</span><span>${formatBytes(r.memory.used)}</span></div>
+      <div class="info-row"><span>Free Memory</span><span>${formatBytes(r.memory.free)}</span></div>
+      <div class="info-row"><span>CPU Cores</span><span>${r.cpu.cores}</span></div>
+      <div class="info-row"><span>Node.js</span><span>${r.nodeVersion}</span></div>
+      <div class="info-row"><span>Platform</span><span>${r.platform}</span></div>
+    `;
+  }
+
+  // Memory history for chart
+  state.memHistory.push(r.memory.percent);
+  if (state.memHistory.length > 20) state.memHistory.shift();
+  updateMemChart();
+}
+
+function updateMemChart() {
+  const labels = state.memHistory.map((_,i)=>i+1+'');
+  if (!memChart) {
+    const ctx = document.getElementById('memChart').getContext('2d');
+    memChart = new Chart(ctx, {
+      type:'line',
+      data:{ labels, datasets:[{label:'Memory %',data:[...state.memHistory],borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.15)',fill:true,tension:.4,pointRadius:0}] },
+      options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{min:0,max:100,grid:{color:'#1e2340'},ticks:{color:'#64748b',font:{size:10}}}, x:{display:false} }, plugins:{ legend:{display:false} } }
+    });
+  } else {
+    memChart.data.labels = labels;
+    memChart.data.datasets[0].data = [...state.memHistory];
+    memChart.update('none');
+  }
+}
+
+function loadSystemStats() { fetchStats(); }
+
+function updateBotStatus(status) {
+  const dot = document.getElementById('sidebarDot');
+  const text = document.getElementById('sidebarStatus');
+  const bcStatus = document.getElementById('bc-status');
+  dot.className = 'status-dot ' + (status||'stopped');
+  text.textContent = status ? status.charAt(0).toUpperCase()+status.slice(1) : 'Stopped';
+  if (bcStatus) bcStatus.textContent = status || 'stopped';
+}
+
+// ── LOGS ──────────────────────────────────────────────────────────────────
+function appendLog(entry) {
+  const container = document.getElementById('logContainer');
+  const recent = document.getElementById('recentLogs');
+  const div = document.createElement('div');
+  div.className = 'log-line ' + (entry.type || 'info');
+  const t = new Date(entry.time).toLocaleTimeString();
+  div.innerHTML = `<span class="log-time">[${t}]</span><span class="log-msg">${escHtml(entry.msg)}</span>`;
+  container.appendChild(div);
+  state.logCount++;
+  document.getElementById('logCountBadge').textContent = state.logCount + ' lines';
+  if (container.children.length > 1000) container.removeChild(container.firstChild);
+  if (state.autoScroll) container.scrollTop = container.scrollHeight;
+
+  // Recent logs widget
+  if (recent) {
+    const rd = div.cloneNode(true);
+    recent.appendChild(rd);
+    if (recent.children.length > 50) recent.removeChild(recent.firstChild);
+    recent.scrollTop = recent.scrollHeight;
+  }
+}
+function clearLogs() {
+  document.getElementById('logContainer').innerHTML = '';
+  document.getElementById('recentLogs').innerHTML = '';
+  state.logCount = 0;
+  document.getElementById('logCountBadge').textContent = '0 lines';
+}
+function toggleAutoScroll() {
+  state.autoScroll = !state.autoScroll;
+  document.getElementById('autoScrollText').textContent = state.autoScroll ? 'Auto-scroll ON' : 'Auto-scroll OFF';
+}
+
+// ── BOT CONTROL ───────────────────────────────────────────────────────────
+async function botAction(action) {
+  const r = await fetch(`/api/bot/${action}`,{method:'POST'}).then(r=>r.json());
+  toast(r.message || 'Done', r.success ? 'success' : 'error');
+  setTimeout(fetchStats, 2000);
+}
+
+// ── COOKIE ────────────────────────────────────────────────────────────────
+async function loadCookieStatus() {
+  const r = await fetch('/api/cookie').then(r=>r.json());
+  const bar = document.getElementById('cookieStatusBar');
+  const txt = document.getElementById('cookieStatusText');
+  if (r.connected) {
+    bar.className = 'cookie-status-bar connected';
+    bar.querySelector('i').className = 'fa-solid fa-circle-check';
+    txt.textContent = 'Cookie connected - Bot is using this cookie';
+    document.getElementById('cookieInput').value = r.cookie;
+  } else {
+    bar.className = 'cookie-status-bar disconnected';
+    bar.querySelector('i').className = 'fa-solid fa-circle-xmark';
+    txt.textContent = 'Not connected - No cookie configured';
+  }
+}
+document.querySelector('.nav-item[onclick*="cookie"]').addEventListener('click', loadCookieStatus);
+
+async function connectCookie() {
+  const cookie = document.getElementById('cookieInput').value.trim();
+  if (!cookie) { toast('Please enter a cookie first.','error'); return; }
+  const prog = document.getElementById('connectProgress');
+  const inner = document.getElementById('connectProgressInner');
+  const txt = document.getElementById('connectProgressText');
+  prog.style.display = 'block';
+  inner.style.width = '0%';
+  txt.textContent = 'Saving cookie...';
+  let w = 0;
+  const iv = setInterval(()=>{ w = Math.min(w+5, 90); inner.style.width = w+'%'; }, 150);
+  const r = await fetch('/api/cookie/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cookie})}).then(r=>r.json());
+  clearInterval(iv);
+  if (r.success) {
+    inner.style.width = '100%';
+    txt.textContent = 'Connect successful!';
+    setTimeout(()=>{ prog.style.display='none'; inner.style.width='0%'; }, 3000);
+    toast('Cookie connected! Bot restarting...','success');
+    loadCookieStatus();
+  } else {
+    prog.style.display = 'none';
+    toast(r.message || 'Failed to connect.','error');
+  }
+}
+
+async function deleteCookie() {
+  const r = await fetch('/api/cookie/delete',{method:'POST'}).then(r=>r.json());
+  toast(r.message || 'Done', r.success?'success':'error');
+  document.getElementById('cookieInput').value = '';
+  loadCookieStatus();
+}
+
+// ── FILE MANAGER ──────────────────────────────────────────────────────────
+function initCodeEditor() {
+  const el = document.getElementById('codeEditor');
+  state.cmEditor = CodeMirror.fromTextArea(el, {
+    mode: 'javascript', theme: 'dracula', lineNumbers: true,
+    autoCloseBrackets: true, tabSize: 2, indentWithTabs: false,
+    lineWrapping: false, extraKeys: {"Ctrl-S": saveFile, "Cmd-S": saveFile}
+  });
+}
+
+async function loadFileTree() {
+  document.getElementById('fileTree').innerHTML = '<div style="padding:8px;color:var(--text-muted);font-size:12px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+  const r = await fetch('/api/files/tree').then(r=>r.json());
+  state.treeData = r.tree;
+  renderTree(r.tree, document.getElementById('fileTree'));
+}
+
+function renderTree(items, container) {
+  container.innerHTML = '';
+  for (const item of items) {
+    if (item.type === 'dir') {
+      const wrapper = document.createElement('div');
+      const row = document.createElement('div');
+      row.className = 'tree-item';
+      row.innerHTML = `<i class="fa-solid fa-chevron-right tree-toggle" id="tog-${btoa(item.path).replace(/=/g,'')}"></i><i class="fa-solid fa-folder"></i><span>${item.name}</span>`;
+      const children = document.createElement('div');
+      children.className = 'tree-children';
+      children.style.display = 'none';
+      if (item.children && item.children.length > 0) renderTree(item.children, children);
+      row.onclick = (e) => {
+        e.stopPropagation();
+        const tog = row.querySelector('.tree-toggle');
+        const isOpen = children.style.display !== 'none';
+        children.style.display = isOpen ? 'none' : 'block';
+        tog.classList.toggle('open', !isOpen);
+        row.querySelector('.fa-folder').className = isOpen ? 'fa-solid fa-folder' : 'fa-solid fa-folder-open';
+      };
+      wrapper.appendChild(row);
+      wrapper.appendChild(children);
+      container.appendChild(wrapper);
+    } else {
+      const row = document.createElement('div');
+      row.className = 'tree-item';
+      const ext = item.name.split('.').pop();
+      const icon = ['js','ts','json','html','css'].includes(ext) ? 'fa-file-code' : 'fa-file-alt';
+      row.innerHTML = `<i style="width:12px"></i><i class="fa-solid ${icon}"></i><span>${item.name}</span>`;
+      row.onclick = () => openFile(item.path, row);
+      container.appendChild(row);
+    }
+  }
+}
+
+async function openFile(filePath, rowEl) {
+  document.querySelectorAll('.tree-item').forEach(i=>i.classList.remove('selected'));
+  if (rowEl) rowEl.classList.add('selected');
+  const r = await fetch(`/api/files/read?filePath=${encodeURIComponent(filePath)}`).then(r=>r.json());
+  if (r.error) { toast(r.error,'error'); return; }
+  state.currentFile = filePath;
+  document.getElementById('currentFilePath').textContent = filePath;
+  document.getElementById('fmEmpty').style.display = 'none';
+  document.getElementById('fmEditorWrap').style.display = 'block';
+  document.getElementById('deleteFileBtn').style.display = 'flex';
+  const ext = filePath.split('.').pop();
+  const mode = ext === 'json' ? {name:'javascript',json:true} : ext === 'html' ? 'htmlmixed' : 'javascript';
+  state.cmEditor.setOption('mode', mode);
+  state.cmEditor.setValue(r.content || '');
+  setTimeout(()=>state.cmEditor.refresh(), 50);
+}
+
+async function saveFile() {
+  if (!state.currentFile) { toast('No file selected.','error'); return; }
+  const content = state.cmEditor.getValue();
+  const r = await fetch('/api/files/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile,content})}).then(r=>r.json());
+  if (r.success) toast('File saved: '+state.currentFile,'success');
+  else toast(r.error||'Save failed','error');
+}
+
+function newFileModal() { document.getElementById('newFileModal').classList.add('show'); }
+function newFolderModal() { document.getElementById('newFolderModal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+async function createFile() {
+  const p = document.getElementById('newFilePath').value.trim();
+  if (!p) return;
+  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:p,isDir:false})}).then(r=>r.json());
+  closeModal('newFileModal');
+  if (r.success) { toast('File created: '+p,'success'); await loadFileTree(); }
+  else toast(r.error||'Failed','error');
+}
+
+async function createFolder() {
+  const p = document.getElementById('newFolderPath').value.trim();
+  if (!p) return;
+  const r = await fetch('/api/files/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:p,isDir:true})}).then(r=>r.json());
+  closeModal('newFolderModal');
+  if (r.success) { toast('Folder created: '+p,'success'); await loadFileTree(); }
+  else toast(r.error||'Failed','error');
+}
+
+function deleteCurrentFile() {
+  if (!state.currentFile) return;
+  document.getElementById('confirmTitle').textContent = 'Delete File';
+  document.getElementById('confirmMsg').textContent = `Are you sure you want to delete "${state.currentFile}"? This cannot be undone.`;
+  document.getElementById('confirmModal').classList.add('show');
+  document.getElementById('confirmOkBtn').onclick = async () => {
+    const r = await fetch('/api/files/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filePath:state.currentFile})}).then(r=>r.json());
+    closeModal('confirmModal');
+    if (r.success) {
+      toast('Deleted: '+state.currentFile,'success');
+      state.currentFile = null;
+      document.getElementById('fmEmpty').style.display = 'flex';
+      document.getElementById('fmEditorWrap').style.display = 'none';
+      document.getElementById('deleteFileBtn').style.display = 'none';
+      document.getElementById('currentFilePath').textContent = 'No file selected';
+      loadFileTree();
+    } else toast(r.error||'Failed','error');
+  };
+}
+
+// ── COMMANDS ──────────────────────────────────────────────────────────────
+let allCmds = [];
+async function loadCommands() {
+  const r = await fetch('/api/commands').then(r=>r.json());
+  if (r.error) { toast(r.error,'error'); return; }
+  allCmds = r.commands;
+  document.getElementById('cmdCountBadge').textContent = allCmds.length + ' commands';
+  renderCommands(allCmds);
+}
+
+function renderCommands(cmds) {
+  const tbody = document.getElementById('cmdTableBody');
+  tbody.innerHTML = '';
+  cmds.forEach(cmd => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${escHtml(cmd.name)}</strong></td>
+      <td style="color:var(--text-muted)">${escHtml(cmd.file)}</td>
+      <td><span class="badge ${cmd.enabled?'badge-success':'badge-danger'}">${cmd.enabled?'Enabled':'Disabled'}</span></td>
+      <td style="text-align:center">
+        <label class="toggle-switch">
+          <input type="checkbox" ${cmd.enabled?'checked':''} onchange="toggleCommand('${escHtml(cmd.name)}',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterCmds() {
+  const q = document.getElementById('cmdSearch').value.toLowerCase();
+  renderCommands(allCmds.filter(c=>c.name.toLowerCase().includes(q)||c.file.toLowerCase().includes(q)));
+}
+
+async function toggleCommand(name, enabled) {
+  const r = await fetch('/api/commands/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enabled})}).then(r=>r.json());
+  if (r.success) { toast(`Command "${name}" ${enabled?'enabled':'disabled'}`, enabled?'success':'info'); loadCommands(); }
+  else toast(r.error||'Failed','error');
+}
+
+// ── CONFIG EDITOR ─────────────────────────────────────────────────────────
+function initConfigEditor() {
+  const el = document.getElementById('configEditor');
+  state.configCmEditor = CodeMirror.fromTextArea(el, {
+    mode: {name:'javascript',json:true}, theme:'dracula', lineNumbers:true,
+    tabSize:2, indentWithTabs:false, lineWrapping:false,
+    extraKeys: {"Ctrl-S":saveConfig,"Cmd-S":saveConfig}
+  });
+}
+
+async function loadConfig() {
+  const r = await fetch('/api/config').then(r=>r.json());
+  if (r.content) { state.configCmEditor.setValue(r.content); setTimeout(()=>state.configCmEditor.refresh(),50); }
+  else toast(r.error||'Failed to load config','error');
+}
+
+async function saveConfig() {
+  const content = state.configCmEditor.getValue();
+  const r = await fetch('/api/config/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})}).then(r=>r.json());
+  if (r.success) toast(r.message||'Config saved!','success');
+  else toast(r.error||'Save failed','error');
+}
+
+// ── BROADCAST ─────────────────────────────────────────────────────────────
+async function sendBroadcast() {
+  const msg = document.getElementById('broadcastMsg').value.trim();
+  if (!msg) { toast('Enter a message first.','error'); return; }
+  toast('Broadcast feature requires bot to be running with active connection.','info');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function formatUptime(secs) {
+  const d=Math.floor(secs/86400),h=Math.floor((secs%86400)/3600),m=Math.floor((secs%3600)/60),s=Math.floor(secs%60);
+  if(d>0) return `${d}d ${h}h`;
+  if(h>0) return `${h}h ${m}m`;
+  if(m>0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+function formatBytes(b) {
+  if(b>1024*1024*1024) return (b/1024/1024/1024).toFixed(1)+'GB';
+  if(b>1024*1024) return (b/1024/1024).toFixed(1)+'MB';
+  if(b>1024) return (b/1024).toFixed(1)+'KB';
+  return b+'B';
+}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg, type='info') {
+  const icons = {success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info',warn:'fa-triangle-exclamation'};
+  const container = document.getElementById('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i><span>${escHtml(msg)}</span>`;
+  container.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(100%)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); },4000);
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('show'); }); });
+</script>
+</body>
+</html>
