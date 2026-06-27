@@ -68,10 +68,13 @@ function startBot() {
   broadcastSSE("status", botStatus);
   addLog("Starting bot process...", "info");
 
+  const botEnv = { ...process.env };
+  delete botEnv.NODE_ENV;
+
   botProcess = spawn("node", ["Goat.js"], {
     cwd: __dirname,
     shell: true,
-    env: { ...process.env }
+    env: botEnv
   });
 
   if (botProcess.stdout) {
