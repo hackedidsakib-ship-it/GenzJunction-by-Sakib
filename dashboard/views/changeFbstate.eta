@@ -3,189 +3,65 @@
 }); %>
 <%~ includeFile("partials/message.eta"); %>
 <%~ includeFile("partials/title.eta", {
-	icon: "fas fa-cookie-bite",
-	title: "Change Facebook Cookie / AppState"
+	icon: "fas fa-cog",
+	title: "Change Facebook state"
 }); %>
 
-<div class="container mt-4" style="max-width: 860px;">
-
-	<!-- Info Card -->
-	<div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
-		<h6 class="alert-heading mb-2"><i class="fas fa-info-circle me-2"></i>Supported Cookie Formats</h6>
-		<ul class="mb-0 ps-3">
-			<li><strong>JSON Array</strong> — <code>[{"key":"c_user","value":"..."},...]</code> (standard fbstate)</li>
-			<li><strong>Cookie String</strong> — <code>c_user=123; xs=abc; datr=xyz</code></li>
-			<li><strong>Netscape Format</strong> — exported from cookie manager extensions</li>
-			<li><strong>Facebook Token</strong> — starts with <code>EAAAA...</code></li>
-		</ul>
-	</div>
-
-	<!-- Tabs -->
-	<ul class="nav nav-tabs mb-3" id="cookieTabs" role="tablist">
-		<li class="nav-item" role="presentation">
-			<button class="nav-link active" id="tab-fbstate-btn" data-bs-toggle="tab" data-bs-target="#tab-fbstate" type="button" role="tab">
-				<i class="fas fa-code me-1"></i> Paste Cookie / AppState
-			</button>
-		</li>
-		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="tab-current-btn" data-bs-toggle="tab" data-bs-target="#tab-current" type="button" role="tab">
-				<i class="fas fa-eye me-1"></i> Current AppState
-			</button>
-		</li>
-	</ul>
-
-	<div class="tab-content" id="cookieTabContent">
-
-		<!-- Paste Tab -->
-		<div class="tab-pane fade show active" id="tab-fbstate" role="tabpanel">
-			<div class="card shadow-sm border-0">
-				<div class="card-body">
-					<label class="form-label fw-semibold" for="fbstateInput">
-						<i class="fas fa-paste me-1"></i> Paste your Cookie or AppState below:
-					</label>
-					<textarea
-						id="fbstateInput"
-						class="form-control font-monospace"
-						rows="12"
-						placeholder='Paste JSON array, cookie string, Netscape format, or Facebook token here...'
-						spellcheck="false"
-						style="font-size: 12.5px; resize: vertical;"
-					></textarea>
-
-					<div id="formatDetected" class="mt-2 small text-muted" style="min-height:20px;"></div>
-
-					<div class="d-flex gap-2 mt-3">
-						<button class="btn btn-primary" id="btnSave" style="min-width:180px;">
-							<i class="fas fa-save me-2"></i>Save &amp; Restart Bot
-						</button>
-						<button class="btn btn-outline-secondary" id="btnClear">
-							<i class="fas fa-trash me-1"></i>Clear
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Current AppState Tab -->
-		<div class="tab-pane fade" id="tab-current" role="tabpanel">
-			<div class="card shadow-sm border-0">
-				<div class="card-body">
-					<label class="form-label fw-semibold">
-						<i class="fas fa-database me-1"></i> Currently saved AppState in <code>account.txt</code>:
-					</label>
-					<textarea
-						class="form-control font-monospace"
-						rows="12"
-						readonly
-						style="font-size: 12px; resize: vertical; opacity: 0.85;"
-					><%=it.currentFbstate%></textarea>
-					<div class="mt-2">
-						<button class="btn btn-sm btn-outline-secondary" id="btnCopyCurrentState">
-							<i class="fas fa-copy me-1"></i>Copy
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div><!-- /tab-content -->
-
-	<!-- Status Alert -->
-	<div id="statusAlert" class="alert mt-4 d-none" role="alert"></div>
-
+<div class="container">
+	<p class="text-center mt-3">Change the Facebook state of the bot</p>
+	<textarea class="tinymce mt-3" id="fbstate" name="content" style="width: 100%; height: 500px;"> <%=it.currentFbstate%> </textarea>
+	<button class="btn btn-primary btn-block mt-4" id="changeFbstate">Save and restart the bot</button>
 </div>
 
-<script>
-(function () {
-	const fbstateInput = document.getElementById("fbstateInput");
-	const btnSave      = document.getElementById("btnSave");
-	const btnClear     = document.getElementById("btnClear");
-	const formatLabel  = document.getElementById("formatDetected");
-	const statusAlert  = document.getElementById("statusAlert");
-	const btnCopyCurrent = document.getElementById("btnCopyCurrentState");
+<script >
+	(function() {
+		const fbstate = $("#fbstate");
+		const btnChange = document.getElementById("changeFbstate");
 
-	// Detect format on input
-	fbstateInput.addEventListener("input", function () {
-		const val = fbstateInput.value.trim();
-		if (!val) { formatLabel.textContent = ""; return; }
+		changeFbstate.addEventListener("click", function() {
+			changeFbstate.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    		<span class="visually-hidden">Đang tải...</span>`;
+			changeFbstate.disabled = true;
 
-		let detected = "";
-		if (val.startsWith("EAAAA")) {
-			detected = "✅ Detected: Facebook Token (EAAAA...)";
-		} else if (val.startsWith("[") || val.startsWith("{")) {
-			try { JSON.parse(val); detected = "✅ Detected: JSON AppState Array"; }
-			catch(e) { detected = "⚠️ Looks like JSON but has syntax errors — please check."; }
-		} else if (/(.+)\t(1|TRUE|true)\t/.test(val)) {
-			detected = "✅ Detected: Netscape Cookie Format";
-		} else if (/\w+=\S+/.test(val)) {
-			detected = "✅ Detected: Cookie String (key=value; ...)";
-		} else {
-			detected = "❓ Format not recognized — please check the supported formats above.";
-		}
-		formatLabel.textContent = detected;
-	});
-
-	// Save button
-	btnSave.addEventListener("click", function () {
-		const val = fbstateInput.value.trim();
-		if (!val) {
-			showAlert("danger", "Please paste your cookie or AppState first.");
-			return;
-		}
-
-		btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving & Restarting...';
-		btnSave.disabled = true;
-		statusAlert.classList.add("d-none");
-
-		$.ajax({
-			url: "/changefbstate",
-			type: "POST",
-			contentType: "application/x-www-form-urlencoded",
-			data: { fbstate: val },
-			success: function (data) {
-				if (data.status === "success") {
-					showAlert("success", "✅ Cookie saved successfully! Bot is restarting now. This may take 10-20 seconds...");
-				} else {
-					showAlert("danger", "❌ Error: " + (data.message || "Something went wrong."));
+			$.ajax({
+				url: "/changefbstate",
+				type: "POST",
+				data: {
+					fbstate: fbstate.val()
+				},
+				success: function(data) {
+					if (data.status == "success") {
+						$.createToast({
+							title: "Success",
+							message: "Đã thay đổi fbstate thành công, bắt đầu khởi động lại bot",
+							type: "success",
+							time: 3000
+						})
+					} else {
+						$.createToast({
+							title: "Error",
+							message: "Đã có lỗi xảy ra, vui lòng thử lại sau",
+							type: "error",
+							time: 3000
+						})
+					}
+				},
+				error: function(err) {
+					$.createToast({
+						title: "Error",
+						message: "Đã có lỗi xảy ra, vui lòng thử lại sau",
+						type: "error",
+						time: 3000
+					})
+				},
+				complete: function() {
+					changeFbstate.innerHTML = "Save and restart the bot";
+					changeFbstate.disabled = false;
 				}
-			},
-			error: function (err) {
-				showAlert("danger", "❌ Request failed. Make sure you are logged in as admin.");
-			},
-			complete: function () {
-				btnSave.innerHTML = '<i class="fas fa-save me-2"></i>Save & Restart Bot';
-				btnSave.disabled = false;
-			}
-		});
-	});
-
-	// Clear button
-	btnClear.addEventListener("click", function () {
-		fbstateInput.value = "";
-		formatLabel.textContent = "";
-		statusAlert.classList.add("d-none");
-	});
-
-	// Copy current state
-	if (btnCopyCurrent) {
-		btnCopyCurrent.addEventListener("click", function () {
-			const ta = btnCopyCurrent.closest(".card-body").querySelector("textarea");
-			navigator.clipboard.writeText(ta.value).then(function () {
-				btnCopyCurrent.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
-				setTimeout(function () {
-					btnCopyCurrent.innerHTML = '<i class="fas fa-copy me-1"></i>Copy';
-				}, 2000);
 			});
 		});
-	}
-
-	function showAlert(type, msg) {
-		statusAlert.className = "alert alert-" + type + " mt-4";
-		statusAlert.innerHTML = msg;
-		statusAlert.classList.remove("d-none");
-		statusAlert.scrollIntoView({ behavior: "smooth", block: "nearest" });
-	}
-})();
+	})();
 </script>
+
 
 <%~ includeFile("partials/footer.eta") %>

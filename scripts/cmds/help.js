@@ -6,7 +6,7 @@ module.exports = {
   config: {
     name: "help",
     aliases: ["menu", "commands"],
-    version: "6.2",
+    version: "6.3",
     author: "EryXenX",
     shortDescription: "Show all commands",
     longDescription: "Show all commands in clean UI",
@@ -35,15 +35,23 @@ module.exports = {
     const categoryFont = (str) =>
       str.split("").map(c => {
         const map = {
-          A:"𝙰",B:"𝙱",C:"𝙲",D:"𝙳",E:"𝙴",F:"𝙵",G:"𝙶",H:"𝙷",
-          I:"𝙸",J:"𝙹",K:"𝙺",L:"𝙻",M:"𝙼",N:"𝙽",O:"𝙾",P:"𝙿",
-          Q:"𝚀",R:"𝚁",S:"𝚂",T:"𝚃",U:"𝚄",V:"𝚅",W:"𝚆",X:"𝚇",
-          Y:"𝚈",Z:"𝚉"
+          A:"𝐀",B:"𝐁",C:"𝐂",D:"𝐃",E:"𝐄",F:"𝐅",G:"𝐆",H:"𝐇",
+          I:"𝐈",J:"𝐉",K:"𝐊",L:"𝐋",M:"𝐌",N:"𝐍",O:"𝐎",P:"𝐏",
+          Q:"𝐐",R:"𝐑",S:"𝐒",T:"𝐓",U:"𝐔",V:"𝐕",W:"𝐖",X:"𝐗",
+          Y:"𝐘",Z:"𝐙"
         };
         return map[c] || c;
       }).join("");
 
     const cleanCategoryName = (text) => text ? text.toLowerCase() : "others";
+
+    const categoryEmojis = {
+      system: "⚙️",
+      economy: "💰",
+      moderation: "🛡️",
+      fun: "🎮",
+      others: "📁"
+    };
 
     if (args[0]) {
       const cmdName = args[0].toLowerCase();
@@ -52,22 +60,27 @@ module.exports = {
         [...allCommands.values()].find(c => c.config.aliases?.includes(cmdName));
 
       if (!cmd)
-        return message.reply(`❌ Command '${cmdName}' not found!`);
+        return message.reply(
+`❌ ${fancyFont(`Command '${cmdName}' not found!`)}
+➤ Try ${prefix}help to see full list`
+        );
 
       const usage = typeof cmd.config.guide === "string"
         ? cmd.config.guide.replace("{pn}", cmd.config.name)
         : cmd.config.name;
 
       const infoMsg =
-`╭─ 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐈𝐍𝐅𝐎
-│ 🧩 ${fancyFont(cmd.config.name)}
-│ 🔗 ${cmd.config.aliases?.join(", ") || "None"}
-│ 📁 ${categoryFont((cmd.config.category || "Others").toUpperCase())}
-│ ⚙️ v${cmd.config.version || "1.0"}
-│ 👑 ${cmd.config.author || "Unknown"}
-│ 📝 ${(cmd.config.longDescription || cmd.config.shortDescription || "No description").slice(0, 40)}
-│ 🚀 ${prefix}${usage}
-╰────────────`;
+`┏━━━━━━━━━━━━━┓
+ 🧩 𝐂𝐌𝐃 𝐈𝐍𝐅𝐎
+┗━━━━━━━━━━━━━┛
+ ✦ Name     : ${cmd.config.name}
+ ✦ Aliases  : ${cmd.config.aliases?.join(", ") || "None"}
+ ✦ Category : ${categoryFont((cmd.config.category || "Others").toUpperCase())}
+ ✦ Version  : v${cmd.config.version || "1.0"}
+ ✦ Author   : ${cmd.config.author || "Unknown"}
+ ✦ Usage    : ${prefix}${usage}
+━━━━━━━━━━━━━━━
+ 📝 ${(cmd.config.longDescription || cmd.config.shortDescription || "No description")}`;
 
       return message.reply(infoMsg);
     }
@@ -81,20 +94,22 @@ module.exports = {
     }
 
     const formatCommands = (cmds) =>
-      cmds.sort().map(c => `• ${fancyFont(c)}`).join("\n");
+      cmds.sort().map(c => `   ➥ ${fancyFont(c)}`).join("\n");
 
     let msg =
-`╭─ 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒
-│ 🔧 ${prefix}
-│ 📊 ${allCommands.size} commands
-╰────────────\n`;
+`┏━━━━━━━━━━━━━┓
+ 📜 𝐂𝐌𝐃 𝐇𝐔𝐁
+┗━━━━━━━━━━━━━┛
+ 🔧 ${prefix} | 📊 ${allCommands.size} cmds
+━━━━━━━━━━━━━━━\n`;
 
     for (const cat of Object.keys(categories)) {
-      msg += `\n${categoryFont(cat.toUpperCase())}\n`;
+      const emoji = categoryEmojis[cat] || "📁";
+      msg += `\n${emoji} 『 ${categoryFont(cat.toUpperCase())} 』 ✦ ${categories[cat].length}\n`;
       msg += formatCommands(categories[cat]) + "\n";
     }
 
-    msg += `\nUse: ${prefix}help <command>`;
+    msg += `\n━━━━━━━━━━━━━━━\n✨ ${prefix}help <command>`;
 
     const gifURLs = [
       "https://i.imgur.com/Xw6JTfn.gif",

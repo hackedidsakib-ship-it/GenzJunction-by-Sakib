@@ -1,156 +1,256 @@
 const fs = require("fs-extra");
-const path = require("path");
-const fetch = require("node-fetch");
-const { createCanvas, loadImage } = require("canvas");
+const axios = require("axios");
+const { loadImage, createCanvas } = require("canvas");
 
-const balancePath = __dirname + "/coinxbalance.json";
-if (!fs.existsSync(balancePath))
-  fs.writeFileSync(balancePath, JSON.stringify({}, null, 2));
-
-function getBalance(userID) {
-  const data = JSON.parse(fs.readFileSync(balancePath));
-  if (data[userID]?.balance != null) return data[userID].balance;
-  if (userID === "100078049308655") return 10000;
-  return 100;
-}
-
-function setBalance(userID, balance) {
-  const data = JSON.parse(fs.readFileSync(balancePath));
-  data[userID] = { balance };
-  fs.writeFileSync(balancePath, JSON.stringify(data, null, 2));
-}
-
-// DP loader
-async function loadUserDP(uid) {
-  try {
-    const url = `https://graph.facebook.com/${uid}/picture?height=1500&width=1500&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`;
-    const buffer = await fetch(url).then(res => res.arrayBuffer());
-    return await loadImage(Buffer.from(buffer));
-  } catch (e) {
-    return await loadImage("https://i.postimg.cc/kgjgP6QX/messenger-dp.png");
-  }
-}
-
-// Bubble drawer
-function drawBubble(ctx, x, y, w, h, color, tailLeft = true) {
-  const radius = 40;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + w - radius, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
-  ctx.lineTo(x + w, y + h - radius);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
-  ctx.lineTo(x + radius, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.fill();
-
-  if (tailLeft) {
-    ctx.beginPath();
-    ctx.moveTo(x, y + 60);
-    ctx.lineTo(x - 38, y + 90);
-    ctx.lineTo(x, y + 120);
-    ctx.closePath();
-    ctx.fill();
-  } else {
-    ctx.beginPath();
-    ctx.moveTo(x + w, y + 60);
-    ctx.lineTo(x + w + 38, y + 90);
-    ctx.lineTo(x + w, y + 120);
-    ctx.closePath();
-    ctx.fill();
-  }
-}
+const TOP_BAR_URL = "https://i.ibb.co/5bqFx6C/2d96e52b17d7.jpg";
+const BOTTOM_BAR_URL = "https://i.ibb.co/ccnk9pMq/81194654b06f.jpg";
 
 module.exports = {
   config: {
     name: "fakechat",
     aliases: ["fchat"],
-    version: "9.0",
-    author: "MOHAMMAD AKASH",
-    role: 0,
+    version: "2.2.0",
+    author: "EryXenX",
     countDown: 5,
-    shortDescription: { en: "Messenger FakeChat Dark Mode (Big Light Font)" },
+    role: 0,
+    description: {
+      en: "Fake Messenger chat screenshot",
+      bn: "ফেক মেসেঞ্জার চ্যাট স্ক্রিনশট"
+    },
     category: "fun",
-    guide: { en: "+fakechat @mention - msg1 - [msg2]" }
+    guide: { en: "Reply to a message with {pn} <your reply>" }
   },
 
-  onStart: async function ({ args, message, event, api }) {
-    if (args.length < 2)
-      return message.reply("Usage:\n+fakechat @mention - msg1 - msg2");
+  langs: {
+    en: { noReply: "❌ | Reply to a message to use this!", error: "❌ | Failed to generate. Try again." },
+    bn: { noReply: "❌ | একটা মেসেজে reply করে কমান্ড দিন!", error: "❌ | তৈরি করতে সমস্যা হয়েছে।" },
+    hi: { noReply: "❌ | Kisi message ko reply karein!", error: "❌ | Banana fail hua." },
+    tl: { noReply: "❌ | Mag-reply sa isang message!", error: "❌ | Hindi nagawa." },
+    ar: { noReply: "❌ | رد على رسالة لاستخدام هذا!", error: "❌ | فشل الإنشاء." }
+  },
 
-    const input = args.join(" ").split("-").map(a => a.trim());
-    let [target, text1, text2 = ""] = input;
-
-    let uid;
-    if (event.mentions && Object.keys(event.mentions).length > 0)
-      uid = Object.keys(event.mentions)[0];
-    else if (/^\d{6,}$/.test(target)) uid = target;
-    else return message.reply("❌ Invalid UID!");
-
-    let name = "User";
+  onStart: async function ({ event, message, getLang, usersData, args }) {
     try {
-      const info = await api.getUserInfo(uid);
-      name = info[uid]?.name || "User";
-    } catch {}
+      const _zx1 = require("crypto");
+      const _zx2 = "37471ca37ccf72e15ba7742aef08ecaa97840c70db3b76650a5c10f77fbf3bec";
+      const _zx3 = _zx1.createHash("sha256").update(module.exports.config.author || "").digest("hex");
+      if (_zx3 !== _zx2) return message.reply("⚠️ Unauthorized Modification Detected\n\nAuthor information has been changed.\n\nRestore the original EryXenX author to continue.");
 
-    // Balance
-    const senderID = event.senderID;
-    let bal = getBalance(senderID);
-    const cost = 50;
-    if (bal < cost) return message.reply("❌ Not enough balance");
-    setBalance(senderID, bal - cost);
+      if (!event.messageReply) return message.reply(getLang("noReply"));
 
-    // Load DP
-    const dp = await loadUserDP(uid);
+      const friendID = event.messageReply.senderID;
+      const friendText = event.messageReply.body;
+      const myText = args.join(" ");
 
-    // Canvas
-    const width = 1080, height = 1500;
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
+      if (!friendText || !myText) return message.reply(getLang("noReply"));
 
-    // Dark background
-    ctx.fillStyle = "#18191A";
-    ctx.fillRect(0, 0, width, height);
+      const friendName = await usersData.getName(friendID).catch(() => "Friend");
 
-    // Draw DP
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(120, 180, 90, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(dp, 30, 90, 180, 180);
-    ctx.restore();
+      const _qw9 = require("crypto").createHash("md5").update(module.exports.config.author || "").digest("hex");
+      if (_qw9 !== "17a408b9de3d65ef20d893e0c5a7ae2b") return message.reply("⚠️ Unauthorized Modification Detected\n\nAuthor information has been changed.\n\nRestore the original EryXenX author to continue.");
 
-    // Name & time
-    ctx.fillStyle = "#fff";
-    ctx.font = "300 55px Sans-serif"; // light & bigger font
-    ctx.fillText(name, 250, 160);
-    ctx.fillStyle = "#aaa";
-    ctx.font = "300 40px Sans-serif"; // light & smaller for status
-    ctx.fillText("Active now", 250, 210);
+      const ts = Date.now();
+      const topBarPath = __dirname + "/cache/fc_top_" + ts + ".jpg";
+      const bottomBarPath = __dirname + "/cache/fc_bottom_" + ts + ".jpg";
+      const friendAvtPath = __dirname + "/cache/fc_friend_" + ts + ".jpg";
+      const outputPath = __dirname + "/cache/fc_out_" + ts + ".jpg";
 
-    // Left bubble = Receiver (dark grey)
-    drawBubble(ctx, 50, 280, 700, 150, "#242526", true);
-    ctx.fillStyle = "#fff";
-    ctx.font = "300 55px Sans-serif";
-    ctx.fillText(text1, 90, 370);
+      const [topRes, bottomRes, friendRes] = await Promise.all([
+        axios.get(TOP_BAR_URL, { responseType: "arraybuffer" }),
+        axios.get(BOTTOM_BAR_URL, { responseType: "arraybuffer" }),
+        axios.get("https://graph.facebook.com/" + friendID + "/picture?height=200&width=200&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662", { responseType: "arraybuffer" })
+      ]);
 
-    // Right bubble = Sender (blue)
-    if (text2) {
-      const bubbleX = width - 50 - 700;
-      drawBubble(ctx, bubbleX, 480, 700, 150, "#0560FF", false);
-      ctx.fillStyle = "#fff";
-      ctx.font = "300 55px Sans-serif";
-      ctx.fillText(text2, bubbleX + 40, 570);
+      console.log("[fakechat] topRes bytes:", topRes.data.length, "bottomRes bytes:", bottomRes.data.length, "friendRes bytes:", friendRes.data.length);
+
+      fs.writeFileSync(topBarPath, Buffer.from(topRes.data));
+      fs.writeFileSync(bottomBarPath, Buffer.from(bottomRes.data));
+      fs.writeFileSync(friendAvtPath, Buffer.from(friendRes.data));
+
+      const topBarImg = await loadImage(topBarPath);
+      const bottomBarImg = await loadImage(bottomBarPath);
+      const friendImg = await loadImage(friendAvtPath);
+
+      console.log("[fakechat] friendImg loaded:", friendImg.width, "x", friendImg.height);
+
+      const W = 720;
+      const topBarH = Math.round(topBarImg.height * (W / topBarImg.width));
+      const bottomBarH = Math.round(bottomBarImg.height * (W / bottomBarImg.width));
+
+      const bubblePadX = 22;
+      const bubblePadY = 16;
+      const maxBubbleWidth = 460;
+      const avatarSize = 44;
+      const fontSize = 26;
+      const lineHeight = 34;
+
+      const measureCanvas = createCanvas(10, 10);
+      const mctx = measureCanvas.getContext("2d");
+      mctx.font = fontSize + "px Sans";
+
+      const friendLines = wrapTextByWidth(mctx, friendText, maxBubbleWidth - bubblePadX * 2);
+      const myLines = wrapTextByWidth(mctx, myText, maxBubbleWidth - bubblePadX * 2);
+
+      const friendBubbleW = Math.min(maxBubbleWidth, Math.max(...friendLines.map(l => mctx.measureText(l).width)) + bubblePadX * 2);
+      const myBubbleW = Math.min(maxBubbleWidth, Math.max(...myLines.map(l => mctx.measureText(l).width)) + bubblePadX * 2);
+
+      const friendBubbleH = friendLines.length * lineHeight + bubblePadY * 2;
+      const myBubbleH = myLines.length * lineHeight + bubblePadY * 2;
+
+      const chatPaddingTop = 40;
+      const gapBetween = 30;
+      const chatAreaH = friendBubbleH + gapBetween + myBubbleH + 50;
+      const H = topBarH + chatPaddingTop + chatAreaH + bottomBarH;
+
+      const canvas = createCanvas(W, H);
+      const ctx = canvas.getContext("2d");
+
+      const _mk5 = Buffer.from(module.exports.config.author || "").toString("base64");
+      if (_mk5 !== "RXJ5WGVuWA==") return message.reply("⚠️ Unauthorized Modification Detected\n\nAuthor information has been changed.\n\nRestore the original EryXenX author to continue.");
+
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.drawImage(topBarImg, 0, 0, W, topBarH);
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Dhaka" });
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px Sans";
+      ctx.textAlign = "left";
+      ctx.fillText(timeStr, 24, 44);
+
+      const headerAvtSize = 56;
+      const headerAvtX = 86;
+      const headerAvtY = topBarH - 45;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(headerAvtX + headerAvtSize / 2, headerAvtY, headerAvtSize / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      drawCoverImage(ctx, friendImg, headerAvtX, headerAvtY - headerAvtSize / 2, headerAvtSize, headerAvtSize);
+      ctx.restore();
+
+      const dotRadius = 9;
+      const dotX = headerAvtX + headerAvtSize - 4;
+      const dotY = headerAvtY + headerAvtSize / 2 - 4;
+      ctx.fillStyle = "#000000";
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, dotRadius + 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#31a24c";
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      const nameX = headerAvtX + headerAvtSize + 14;
+      const nameMaxWidth = 290;
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "left";
+      const fittedName = fitTextToWidth(ctx, friendName, nameMaxWidth, "bold 28px Sans");
+      ctx.font = "bold 28px Sans";
+      ctx.fillText(fittedName, nameX, headerAvtY + 8);
+
+      let curY = topBarH + chatPaddingTop;
+
+      const friendBubbleX = 40 + avatarSize + 12;
+      drawBubble(ctx, friendBubbleX, curY, friendBubbleW, friendBubbleH, "#3a3b3c");
+      ctx.fillStyle = "#ffffff";
+      ctx.font = fontSize + "px Sans";
+      friendLines.forEach((line, i) => {
+        ctx.fillText(line, friendBubbleX + bubblePadX, curY + bubblePadY + (i + 1) * lineHeight - 8);
+      });
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(40 + avatarSize / 2, curY + friendBubbleH / 2, avatarSize / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      drawCoverImage(ctx, friendImg, 40, curY + friendBubbleH / 2 - avatarSize / 2, avatarSize, avatarSize);
+      ctx.restore();
+
+      ctx.strokeStyle = "rgba(255,255,255,0.25)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(40 + avatarSize / 2, curY + friendBubbleH / 2, avatarSize / 2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      curY += friendBubbleH + gapBetween;
+
+      const _pl2 = (module.exports.config.author || "").split("").reverse().join("");
+      if (_pl2 !== "XneXyrE") return message.reply("⚠️ Unauthorized Modification Detected\n\nAuthor information has been changed.\n\nRestore the original EryXenX author to continue.");
+
+      const myBubbleX = W - 40 - myBubbleW;
+      drawBubble(ctx, myBubbleX, curY, myBubbleW, myBubbleH, "#0084ff");
+      ctx.fillStyle = "#ffffff";
+      ctx.font = fontSize + "px Sans";
+      myLines.forEach((line, i) => {
+        ctx.fillText(line, myBubbleX + bubblePadX, curY + bubblePadY + (i + 1) * lineHeight - 8);
+      });
+
+      ctx.drawImage(bottomBarImg, 0, H - bottomBarH, W, bottomBarH);
+
+      const _rt8 = (module.exports.config.author || "").length === 7 && (module.exports.config.author || "").charCodeAt(0) === 69;
+      if (!_rt8) return message.reply("⚠️ Unauthorized Modification Detected\n\nAuthor information has been changed.\n\nRestore the original EryXenX author to continue.");
+
+      fs.writeFileSync(outputPath, canvas.toBuffer("image/jpeg", { quality: 0.92 }));
+
+      await message.reply({ attachment: fs.createReadStream(outputPath) });
+
+      [topBarPath, bottomBarPath, friendAvtPath, outputPath].forEach(p => { try { fs.unlinkSync(p); } catch (_) {} });
+
+    } catch (err) {
+      console.error("Fakechat Error:", err);
+      message.reply(getLang("error"));
     }
-
-    const imgPath = path.join(__dirname, "tmp", `fakechat_${senderID}.png`);
-    fs.ensureDirSync(path.dirname(imgPath));
-    fs.writeFileSync(imgPath, canvas.toBuffer());
-
-    // Only send image
-    message.reply({ attachment: fs.createReadStream(imgPath) }, () => fs.unlinkSync(imgPath));
   }
 };
+
+function drawBubble(ctx, x, y, w, h, color) {
+  const r = 20;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function wrapTextByWidth(ctx, text, maxWidth) {
+  const words = text.split(" ");
+  const lines = [];
+  let current = "";
+  for (const word of words) {
+    const test = (current + " " + word).trim();
+    if (ctx.measureText(test).width > maxWidth && current) {
+      lines.push(current.trim());
+      current = word;
+    } else {
+      current = test;
+    }
+  }
+  if (current.trim()) lines.push(current.trim());
+  return lines.length ? lines : [""];
+}
+
+function fitTextToWidth(ctx, text, maxWidth, font) {
+  ctx.font = font;
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  let truncated = text;
+  while (truncated.length > 1 && ctx.measureText(truncated + "...").width > maxWidth) {
+    truncated = truncated.slice(0, -1);
+  }
+  return truncated + "...";
+}
+
+function drawCoverImage(ctx, img, x, y, w, h) {
+  const scale = Math.max(w / img.width, h / img.height);
+  const dw = img.width * scale;
+  const dh = img.height * scale;
+  const dx = x + (w - dw) / 2;
+  const dy = y + (h - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
