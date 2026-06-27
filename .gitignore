@@ -1,0 +1,9 @@
+node_modules/
+account.txt
+account.dev.txt
+*.log
+.env
+.env.*
+database/data/*.sqlite
+tmp/
+.cache/
